@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {% block title %} {{user}} {% endblock title %} {% block body %} {% if user.is_authenticated and user.email not in emails %}
+
+
+<table>
+    <tr id='colab'>
+        <td>Ip</td>
+        <td>
+            Nome
+        </td>
+        <td>Data</td>
+        <td>Entrada</td>
+        <td>Saida</td>
+        <td>Jornada trabalhada</td>
+        <td>Observações</td>
+
+    </tr>
+
+    {% for periodo in periodo_list %}
+
+    <tr id='colab'>
+        <td> {{periodo.ip_address}} </td>
+        <td> {{periodo.colaborador|title}} </td>
+        <td> {{periodo.entrada|date:"d/m/y"}} </td>
+        <td> {{periodo.entrada|time:"H:i:s"}} </td>
+        <td> {{periodo.saida|time:"H:i:s"}} </td>
+        <td> {{periodo.jornada|floatformat:"1"}}</td>
+        <td style="width:40%;"> {{periodo.observacoes}}</td>
+
+
+
+
+    </tr>
+    {% endfor %}
+
+    <tr>
+
+    </tr>
+</table>
+{% endif %} {% endblock body %}

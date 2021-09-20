@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block content %}
+<h5>Usuários participando:</h5>
+<br> {% if participante.email not in emails %}
+<ul>
+    {% for participante in participantes %} {% if participante.email in emails %}
+    <li>
+        <h5>Nome: {{participante|title}}</h5> email {{participante.email}} [estagiário]</li>
+    {% else %}
+    <li>
+        <h5>Nome: {{participante|title}}</h5> email {{participante.email}}</li>
+    {% endif %} {% endfor %}
+</ul>
+
+{% else %} Área Restrita {% endif %} {% endblock content %}

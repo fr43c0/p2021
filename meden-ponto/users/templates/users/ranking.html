@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% block title %} {{user.id}} teste {% endblock title %} {% block body %} {% if user.is_authenticated and user.email not in emails%}
+<table>
+    <tr>
+        <td id='colab'>Nome</td>
+        <td id='colab'>Data entrada</td>
+        <td id='colab'>Dias corridos(A)</td>
+        <td id='colab'>Dias trabalhados(B)</td>
+
+        <td id='colab'>% dias trabalhados</td>
+        <td id='colab'>Total horas</td>
+        <td id='colab'>Media horas/(A)</td>
+        <td id='colab'>Media horas/(B)</td>
+
+    </tr>
+    {% for u in U %}
+    <tr>
+        <td style='text-align: center;' id="colab">{{u.colaborador|title}} </td>
+        <td style='text-align: center;' id="colab">{{u.data_inicio|date:"d/m/Y"}}</td>
+        <td style='text-align: center;' id="colab">{{u.dias_corridos}}</td>
+        <td style='text-align: center;' id="colab">{{u.dias_trabalhados}}</td>
+
+        <td style='text-align: center;' id="colab">{{u.media_dias_t|floatformat:"1"}}</td>
+        <td style='text-align: center;' id="colab">{{u.horas_totais|floatformat:"1"}}</td>
+        <td style='text-align: center;' id="colab">{{u.media_h_d_c|floatformat:"1"}}</td>
+        <td style='text-align: center;' id="colab">{{u.media_h_d_t|floatformat:"1"}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+
+<h1>Área restrita</h1>
+{% endif %} {% endblock body %}

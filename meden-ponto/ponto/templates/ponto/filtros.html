@@ -1,0 +1,65 @@
+{% extends 'base.html' %} {% block content %} {% if user.is_authenticated and user.email not in emails %}
+<!--  2021 -->
+
+
+<table>
+    <tr id='colab'>
+        <td>Ip</td>
+        <td>
+            <form action="" method="post">
+                {% csrf_token %}
+
+                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Nome
+                       
+                                <span class="caret"></span>
+                       
+                            </button>
+
+
+                <ul class="dropdown-menu">
+                    <li><input id='entrada' name='usuario' type="submit" value='Todos' class='btn btn-light'></li>
+                    {% for up in l %}
+
+                    <li> <input id='entrada' name='usuario' type="submit" value={ {up.colaborador|title}} class='btn btn-light'>
+                    </li>
+                    {% endfor %}
+
+                </ul>
+            </form>
+
+
+
+        </td>
+        <td>Data</td>
+        <td>Entrada</td>
+        <td>Saida</td>
+        <td>Jornada trabalhada</td>
+        <td>Observações</td>
+
+    </tr>
+
+    {% for periodo in p %}
+
+    <tr id='colab'>
+        <td> {{periodo.ip_address}} </td>
+        <td> {{periodo.colaborador|title}} </td>
+        <td> {{periodo.entrada|date:"d/m/y"}} </td>
+        <td> {{periodo.entrada|time:"H:i:s"}} </td>
+        <td> {{periodo.saida|time:"H:i:s"}} </td>
+        <td> {{periodo.jornada|floatformat:"1"}}</td>
+        <td style="width:40%;"> {{periodo.observacoes}}</td>
+
+
+
+
+    </tr>
+    {% endfor %}
+
+    <tr>
+
+    </tr>
+</table>
+{% else %}
+<h1>Área restrita</h1>
+<!--  2021 -->
+{% endif %} {% endblock content %}
