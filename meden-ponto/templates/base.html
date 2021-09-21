@@ -47,9 +47,9 @@
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                         {% if user.is_authenticated %} {% if user.is_superuser %}
-                        <a class="nav-item nav-link" href="{% url 'users:participantes' %}">Membros</a>
-                        <a class="nav-item nav-link" href="{% url 'users:novo' %}">cadastrar e-mail</a>
-                        <a class="nav-item nav-link" href="{% url 'users:permitidos' %}"> autorizados</a> {% endif %}
+                        <a class="nav-item nav-link" href="{% url 'users:participantes' %}">Participantes</a>
+                        <a class="nav-item nav-link" href="{% url 'users:novo' %}">Autorizar e-mail</a>
+                        <a class="nav-item nav-link" href="{% url 'users:permitidos' %}"> Autorizados</a> {% endif %}
                         <a class="nav-item nav-link" href="{% url 'users:logout' %}">Logout</a> {% else %}
                         <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
                         <a class="nav-item nav-link" href="{% url 'register' %}">Registre-se</a> {% endif %}

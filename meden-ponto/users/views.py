@@ -116,7 +116,7 @@ def seleciona_nome(request):
     if request.method=='POST':
         r=request.POST
         print(r)
-    return render(request,'accounts/geral.html',context)
+    return render(request,'accounts/geral.html',context) #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<essa funcao serve pra que ? o context nao foi declarado
 
 class RankingTemplateView(TemplateView):
     template_name='users/ranking.html'

@@ -84,9 +84,9 @@ def get_context(context,request):
         context['e']=e.order_by('entrada')
     context2=get_display_status(context)
     return context2,lista
-def apaga_objetos_obs(user):
+def apaga_objetos_obs(user):#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     try:
-        oo=Obs.objects.filter(colaborador__username=x)
+        oo=Obs.objects.filter(colaborador__username=x)#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         print('oooooooooooooo',len(oo), oo)
         while len(oo)>0:
             oo[0].delete()#PARA APAGAR TODOS OS OBJETOS OBS!!!       
