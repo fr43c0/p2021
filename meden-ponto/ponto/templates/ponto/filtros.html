@@ -1,62 +1,81 @@
 {% extends 'base.html' %} {% block content %} {% if user.is_authenticated and user.email not in emails %}
 <!--  2021 -->
-
-
 <table>
     <tr id='colab'>
         <td>Ip</td>
         <td>
             <form action="" method="post">
                 {% csrf_token %}
-
                 <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Nome
-                       
-                                <span class="caret"></span>
-                       
-                            </button>
-
-
+                                                       <span class="caret"></span>
+                                                   </button>
                 <ul class="dropdown-menu">
                     <li><input id='entrada' name='usuario' type="submit" value='Todos' class='btn btn-light'></li>
                     {% for up in l %}
-
-                    <li> <input id='entrada' name='usuario' type="submit" value={ {up.colaborador|title}} class='btn btn-light'>
+                    <li> <input id='entrada' name='usuario' type="submit" value={{up.colaborador|title}} class='btn btn-light'>
                     </li>
                     {% endfor %}
-
                 </ul>
             </form>
-
-
-
         </td>
-        <td>Data</td>
+        <td>
+            <form action="" method="post">
+                {% csrf_token %}
+
+                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Data
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><input id='entrada' name='periodo' type="submit" value='Todas' class='btn btn-light'></li>
+
+                    <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Período
+                        <span class="caret"></span>
+                    </button>
+                    <ul style="padding-left:15px;" class="dropdown-menu">
+                        {% for a in A %}
+                        <li><input type="checkbox" id='' name='ano' type="submit" value={{a}} class='btn btn-light'>&nbsp;<label for="">{{a}}</label></li>
+                        {% endfor %}
+                        <hr>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='1' class='btn btn-light'>&nbsp;<label for="">JAN</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='2' class='btn btn-light'>&nbsp;<label for="">FEV</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='3' class='btn btn-light'>&nbsp;<label for="">MAR</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='4' class='btn btn-light'>&nbsp;<label for="">ABR</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='5' class='btn btn-light'>&nbsp;<label for="">MAI</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='6' class='btn btn-light'>&nbsp;<label for="">JUN</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='7' class='btn btn-light'>&nbsp;<label for="">JUL</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='8' class='btn btn-light'>&nbsp;<label for="">AGO</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='9' class='btn btn-light'>&nbsp;<label for="">SET</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='10' class='btn btn-light'>&nbsp;<label for="">OUT</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='11' class='btn btn-light'>&nbsp;<label for="">NOV</label></li>
+                        <li><input type="checkbox" id='' name='mes' type="submit" value='11' class='btn btn-light'>&nbsp;<label for="">DEZ</label></li>
+                        <li> <button class="btn btn-primary" type="submit">Selecionar</button></li>
+                    </ul>
+                </ul>
+                <input type="hidden" name="qual" id="qual" value={{qual}}>
+                <!-- TENTAR COM SELECT PARA VER SER ROLA MULTIPLAS COLUNAS -->
+            </form>
+
+            <script>
+                let a
+            </script>
+        </td>
         <td>Entrada</td>
         <td>Saida</td>
         <td>Jornada trabalhada</td>
         <td>Observações</td>
-
     </tr>
-
     {% for periodo in p %}
-
     <tr id='colab'>
         <td> {{periodo.ip_address}} </td>
-        <td> {{periodo.colaborador|title}} </td>
+        <td> {{periodo.colaborador|title}}</td>
         <td> {{periodo.entrada|date:"d/m/y"}} </td>
         <td> {{periodo.entrada|time:"H:i:s"}} </td>
         <td> {{periodo.saida|time:"H:i:s"}} </td>
         <td> {{periodo.jornada|floatformat:"1"}}</td>
         <td style="width:40%;"> {{periodo.observacoes}}</td>
-
-
-
-
     </tr>
     {% endfor %}
-
     <tr>
-
     </tr>
 </table>
 {% else %}

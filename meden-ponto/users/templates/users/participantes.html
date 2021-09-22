@@ -4,7 +4,7 @@
 <ul>
     {% for participante in participantes %} {% if participante.email in emails %}
     <li>
-        <h5>Nome: {{participante|title}}</h5> email {{participante.email}} [estagiário]</li>
+        <h5>Nome: {{participante|title}} <i>[estagiário]</i></h5> email {{participante.email}}</li>
     {% else %}
     <li>
         <h5>Nome: {{participante|title}}</h5> email {{participante.email}}</li>

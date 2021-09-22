@@ -41,6 +41,28 @@ def usuarios_q_ja_iniciaram():
 #         form = UserRegisterForm()
 #     return render(request, 'users/register.html', {'form': form})
 
+
+#Para editar o cargo do entre estagiario e efetivado
+@staff_member_required 
+def editar_permitido(request,pk):
+    if request.method == 'POST':
+        r=request.POST
+        if "cargo" in r.keys():
+            if r['cargo'] == 'efetivado':
+                P=Permitidos.objects.get(pk=pk)
+                P.estagiario=False
+                P.save()
+                print(P.email)
+            if r['cargo'] == 'estagiario':
+                P=Permitidos.objects.get(pk=pk)
+                P.estagiario=True
+                P.save()
+        LIST=Permitidos.objects.all()
+        context={}
+        context['permitidos']=LIST
+        return redirect('users:permitidos')
+
+
 @staff_member_required 
 def del_user(request,pk): 
     if request.method == 'POST':

@@ -18,6 +18,7 @@ urlpatterns = [
     path('ranking/',user_views.RankingTemplateView.as_view(template_name='users/ranking.html'),name='ranking'),
     path('permitidos/',user_views.EmailListView.as_view(),name='permitidos'),
     path('permitidos/<int:pk>/',user_views.EmailDetailView.as_view(),name='detalhe'),
+     path('permitidos/<int:pk>/editar_permitido',user_views.editar_permitido,name='editar_permitido'),
     path('deletar/<int:pk>/',user_views.EmailDeleteView.as_view(),name='deletar'),
     path('novo/',user_views.EmailCreateView.as_view(),name='novo'),
     path('participantes/',user_views.ParticipantesTemplateView.as_view(),name='participantes'),

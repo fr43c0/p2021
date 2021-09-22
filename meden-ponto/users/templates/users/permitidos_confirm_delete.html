@@ -1,9 +1,9 @@
 {% extends 'base.html' %} {% block content %}
 
-<h2>Deletar apenas o email: "{{permitidos.email}}" ?</h2>
-<p>Opção para o caso em que o usuario ainda não se registrou</p>
-<p>OBS: Os email de estagiários constantes nessa lista são impedidos de visualizar dados de outros colaboradores!</p>
-<p>Caso um estagiário seja deletado da lista ja tendo se registrado, este permanecerá no banco de dados e ainda passará a ter acesso aos dados de todos os demais colaboradores.</p>
+<h2>Deletar o email de usuário ainda não registrado: "{{permitidos.email}}" ?</h2>
+<p>Opção para o caso em que o usuário ainda não se registrou</p>
+<p>OBS: Os usuários cujos emails constam nessa lista [Estagiários] são impedidos de visualizar dados de outros colaboradores!</p>
+<p><b>Caso um estagiário seja deletado da lista após ter se registrado, este permanecerá no banco de dados e ainda passará a ter acesso aos dados de todos os demais colaboradores.<b></p>
 <form action="" method="post">
     {% csrf_token %}
     <input type="submit" class='btn btn-danger' id="" value='Deletar'>
@@ -15,7 +15,7 @@
 <hr>
 
 <h2>Deletar o usuário "{{permitidos.email}}" permanentemente do banco de dados ?</h2>
-<p>Opção para usuário já registrado</p>
+<p>Opção para apagar todos os dados de  usuário já registrado</p>
 <form action="del_user" method="post">
     {% csrf_token %}
     <input type="hidden" class='' name="email" value="{{permitidos.email}}">

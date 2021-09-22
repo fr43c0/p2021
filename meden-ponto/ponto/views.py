@@ -44,12 +44,14 @@ def usuarios_q_ja_iniciaram():
     #retorna lista de  usuario/Periodo salvos 
     return Usuarios
 
-def q_set_var(usuario): #CRIA UMA VARIAVEL DA INSTANCIA DE CADA MODEL COM NOME DO USUARIO E NADA MAIS POREM NAO SALVA ESSA INSTANCIA...
+#CRIA UMA VARIAVEL DA INSTANCIA DE CADA MODEL - COM NOME DO USUARIO - E NADA MAIS POREM NAO SALVA ESSA INSTANCIA...
+def q_set_var(usuario): 
     p=Periodo(colaborador=usuario)
     ep=Entraram(colaborador=usuario)
     op=Obs(colaborador=usuario)
     return p,ep,op
 
+#a partir de uma request retorna a observaçao o usuario 
 def get_usuario_e_obs(request): 
     botao='' 
     r=request.POST
@@ -84,16 +86,19 @@ def get_context(context,request):
         context['e']=e.order_by('entrada')
     context2=get_display_status(context)
     return context2,lista
-def apaga_objetos_obs(user):#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+#VERIFICAR UTILIDADE DESSA FUNCAO POIS PARECE QUE NAO ESTA SENDO USADA
+def apaga_objetos_obs(x):# substitui user por x aqui   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     try:
-        oo=Obs.objects.filter(colaborador__username=x)#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        oo=Obs.objects.filter(colaborador__username=x)# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         print('oooooooooooooo',len(oo), oo)
         while len(oo)>0:
             oo[0].delete()#PARA APAGAR TODOS OS OBJETOS OBS!!!       
     except Exception as e:
         print('apaga objetos obs ', e)
         pass
-
+# ESTA HAVENDO UM ERRO NO DIAS CORRIDOS QUANDO ENTRA NO MESMO DIA DA DIVISAO POR ZERO
 def get_dias_corridos(inicio):
         hoje=timezone.now()
         delta=hoje-inicio
@@ -102,6 +107,8 @@ def get_dias_corridos(inicio):
         else:
             dias=delta.days
             dias_corridos=dias
+        if dias_corridos == 0:#<<<<<<<<<<<<<<<<<<<<<<
+            dias_corridos=1   #<<<<<<<<<<<<<<<<<<<<<<
         return dias_corridos
 
 def get_dias_trabalhados(x):
@@ -126,37 +133,69 @@ def get_horas_totais(x):
         total=total+j
     return total
 
+#\INUTIL
 def status(request):
     pass
     
     
 def filtros(request):
-    print('filtrando')
     context={}
     p=Periodo.objects.all().order_by('entrada')
+    A=[]
+    #Pega os anos de uso do APP em uso
+    for i in p:
+        if i.saida.year not in A:
+            A.append(i.saida.year) 
+    context['A']=A
     context['p']=p
     l=usuarios_q_ja_iniciaram()
     context['l']=l
     filtro=Filtro.objects.all()
+    context['f']=filtro
     if request.method=='POST':
         r=request.POST
-        print(r)
         if 'usuario'in r.keys():
             nome=r['usuario']
-            print(nome,type(nome))
+            context['qual']=r['usuario']
             if nome!='Todos':
                 nome=nome.lower()
                 p=Periodo.objects.all().filter(colaborador__username=nome).order_by('entrada')
             else:
                 p=Periodo.objects.all().order_by('entrada')
-        
-        u=User.objects.all()
-        context={'l':l,'u':u,'p':p,'f':filtro}
-        context['c']=context
-    # ###############################################################################
+        if "periodo" not in r.keys():
+            if "qual" in r.keys() and r['qual']!="Todos" and r['qual']!='':
+                qual=r['qual']
+                if "ano" in r.keys():  
+                    anos=r.getlist('ano')
+                    if "mes" in r.keys():
+                        meses=r.getlist('mes')
+                        p=p.filter(saida__year__in=anos).filter(saida__month__in=meses).filter(colaborador__username__iexact=qual.lower())
+                    else:
+                        p=p.filter(saida__year__in=anos).filter(colaborador__username__iexact=qual.lower())
+                elif "mes" in r.keys():
+                    meses=r.getlist('mes')
+                    p=p.filter(saida__month__in=meses).filter(colaborador__username__iexact=qual.lower())
+            else:    
+                if "ano" in r.keys():  
+                    anos=r.getlist('ano')
+                    if "mes" in r.keys():
+                        meses=r.getlist('mes')
+                        p=p.filter(saida__year__in=anos).filter(saida__month__in=meses)
+                    else:
+                        p=p.filter(saida__year__in=anos)
+                elif "mes" in r.keys():
+                    meses=r.getlist('mes')
+                    p=p.filter(saida__month__in=meses)      
+    u=User.objects.all()
+    context['u']=u
+    context['p']=p
+    #context={'l':l,'u':u,'p':p,'f':filtro,}
+    context['c']=context
+    # ###############################################################################PASSANDO OS EMAILS DOS ESTAGIARIOS PARA O CONTEXT 
     PERM=Permitidos.objects.filter(estagiario=True)
-    EMAILS=[p.email for p in PERM]
+    EMAILS=[perm.email for perm in PERM]
     context['emails']=EMAILS
+    context['A']=A
     # ###############################################################################  
     print(f'context {context}')
     return render(request,'ponto/filtros.html',context)
@@ -198,7 +237,7 @@ def index(request):
             lista.append(x)
             if  len(Entraram.objects.filter(colaborador=x))==0:
                 ep=Entraram(entrada=entrada,ip_address=get_client_ip(request),colaborador=usuario,display='entrou')
-                print('88888888888888888888',ep.entrada)
+                #print('88888888888888888888',ep.entrada)
                 ep.save()
         
         elif botao.lower()=='término':
@@ -221,7 +260,7 @@ def index(request):
             
             ep=Entraram.objects.get(colaborador=x)
             entrada=ep.entrada
-            print('9999999999999999999',entrada)
+            #print('9999999999999999999',entrada)
             ip=ep.ip_address
             display_anterior=ep.display
             ep.delete()
