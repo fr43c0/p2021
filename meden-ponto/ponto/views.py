@@ -159,7 +159,9 @@ def filtros(request):
             context['qual']=r['usuario']
             if nome!='Todos':
                 nome=nome.lower()
-                p=Periodo.objects.all().filter(colaborador__username=nome).order_by('entrada')
+                print(25*"=> ",nome)
+                p=Periodo.objects.all().filter(colaborador__username__iexact=nome).order_by('entrada')
+                print(25*"=> ",nome, ' ',len(p))
             else:
                 p=Periodo.objects.all().order_by('entrada')
         if "periodo" not in r.keys():
@@ -197,7 +199,7 @@ def filtros(request):
     context['emails']=EMAILS
     context['A']=A
     # ###############################################################################  
-    print(f'context {context}')
+    #print(f'context {context}')
     return render(request,'ponto/filtros.html',context)
 
 def index(request):

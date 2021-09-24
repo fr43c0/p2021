@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block title %} {{user.id}} teste {% endblock title %} {% block body %} {% if user.is_authenticated and user.email not in emails%}
-<table>
+<table id='rank'>
     <tr>
         <td id='colab'>Nome</td>
         <td id='colab'>Data entrada</td>
@@ -26,7 +26,108 @@
     </tr>
     {% endfor %}
 </table>
-{% else %}
 
+<br><br>
+
+
+<br>
+<form action="filtro" method="POST">
+    {% csrf_token %}
+    <div class="d-flex">
+        <h6 style="margin-top: auto">Filtre por: </h6> &nbsp; &nbsp;
+        <div class="dropdown">
+            <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Usuários
+                <span class="caret"></span>
+            </button>
+            <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
+                {% for u in U %}
+                <li>
+                    <input type="checkbox" name='usuario' type="submit" value='{{u.colaborador}}' class='btn btn-light'> &nbsp;
+                    <label for="">{{u.colaborador}}</label>
+                </li>
+                {% endfor %}
+            </ul>
+            &nbsp; &nbsp;
+        </div>
+        <div class="dropdown">
+            <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Anos
+                <span class="caret"></span>
+            </button>
+            <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
+                {% for a in A %}
+                <li><input type="checkbox" name='ano' type="submit" value='{{a}}' class='btn btn-light'> &nbsp;
+                    <label for="">{{a}}</label>
+                </li>
+                {% endfor %}
+            </ul>
+            &nbsp; &nbsp;
+        </div>
+        <div class="dropdown">
+            <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Meses
+            <span class="caret"></span>
+        </button>
+            <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
+                <li><input type="checkbox" id='' name='mes' type="submit" value='1' class='btn btn-light'>&nbsp;<label for="">JAN</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='2' class='btn btn-light'>&nbsp;<label for="">FEV</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='3' class='btn btn-light'>&nbsp;<label for="">MAR</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='4' class='btn btn-light'>&nbsp;<label for="">ABR</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='5' class='btn btn-light'>&nbsp;<label for="">MAI</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='6' class='btn btn-light'>&nbsp;<label for="">JUN</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='7' class='btn btn-light'>&nbsp;<label for="">JUL</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='8' class='btn btn-light'>&nbsp;<label for="">AGO</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='9' class='btn btn-light'>&nbsp;<label for="">SET</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='10' class='btn btn-light'>&nbsp;<label for="">OUT</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='11' class='btn btn-light'>&nbsp;<label for="">NOV</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='12' class='btn btn-light'>&nbsp;<label for="">DEZ</label></li>
+            </ul>
+        </div> &nbsp; &nbsp;
+        <button class="btn btn-primary" type="submit">Selecionar</button>
+    </div>
+
+</form>
+<script>
+    //FUNCAO QUE ORDENA O RANKING PELA COLUNA 5
+    //POSE SER ACRESCENTADO UM BOTAO  NAS COLUNAS PARA ISSO
+    function sortTable() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("rank");
+        switching = true;
+        /*Make a loop that will continue until
+        no switching has been done:*/
+        while (switching) {
+            console.log('indo')
+                //start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+
+            /*Loop through all table rows (except the
+            first, which contains table headers):*/
+            for (i = 1; i < (rows.length - 1); i++) {
+                //start by saying there should be no switching:
+                shouldSwitch = false;
+                /*Get the two elements you want to compare,
+                one from current row and one from the next:*/
+                x = rows[i].getElementsByTagName("td")[5];
+                y = rows[i + 1].getElementsByTagName("td")[5];
+                //check if the two rows should switch place:
+                if (Number(x.innerHTML.replace(',', '.')) < Number(y.innerHTML.replace(',', '.'))) {
+                    //if so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                console.log('fazer troca')
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+
+    }
+    setTimeout(sortTable, 1000)
+</script>
+{% else %}
 <h1>Área restrita</h1>
 {% endif %} {% endblock body %}
