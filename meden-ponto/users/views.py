@@ -35,7 +35,7 @@ def getDiasCorridosPorUser(usuario,anos,meses):
     
     if len (anos) > 0 and meses == []:
     #calcula os blocos de anos inteiros menos o do ano de entrada que deve ser descontado os dias ate a entrada
-    # todos os anos valem 365 menos o ano da data inicial
+    # todos os anos valem 365 menos o ano da data inicial e o ano atual que nao acabou
         DiasCorridos=0
         for ano in anos:
             ano=int(ano)
@@ -47,13 +47,13 @@ def getDiasCorridosPorUser(usuario,anos,meses):
                 DiasCorridos+=delta
             
             # trabalhou um ano ja terminado do inicio ao fim
-            if ano != datetime.datetime.now().year and  ano_inicial != ano and trabalhouNesseAno > 0:
+            if ano_inicial < ano < datetime.datetime.now().year and trabalhouNesseAno > 0:
                 DiasCorridos+=365
             
             #Trabalhou  em ano ja terminado porem começou depois do inicio do ano
             if ano_inicial == ano and ano != datetime.datetime.now().year:
-                fim_do_ando=datetime.date(ano_inicial,12,31)
-                delta=datetime.date(ano_inicial,12,31) - datetime.date(ano_inicial,mes_inicial,data_inicial.day) 
+                fim_do_ando=datetime.datetime(ano_inicial,12,31)
+                delta=datetime.datetime(ano_inicial,12,31) - datetime.datetime(ano_inicial,mes_inicial,data_inicial.day) 
                 DiasCorridos+=delta.days
             
             #iniciou nesse ano atual que ainda nao acabou porem comecou depois do inicio do ano
