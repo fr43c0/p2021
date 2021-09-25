@@ -29,76 +29,90 @@ def getDiasCorridosPorUser(usuario,anos,meses):
     ano_inicial=data_inicial.year
     d,m,a=data_inicial,mes_inicial,ano_inicial
     print(d,m,a)
-    if anos== [] and meses == []:
-        DiasCorridos=p.filter(colaborador__username=usuario).last().dias_corridos
-        return DiasCorridos
     
-    if len (anos) > 0 and meses == []:
-    #calcula os blocos de anos inteiros menos o do ano de entrada que deve ser descontado os dias ate a entrada
-    # todos os anos valem 365 menos o ano da data inicial e o ano atual que nao acabou
-        DiasCorridos=0
-        for ano in anos:
-            ano=int(ano)
-            trabalhouNesseAno=len(p.filter(colaborador__username=usuario).filter(entrada__year=ano))
-            
-            # esta trabalhando no ano atual desde o inicio do ano 
-            if ano == datetime.datetime.now().year and  ano_inicial != ano and trabalhouNesseAno > 0:
-                delta=(datetime.datetime.now()-datetime.datetime(ano,1,1)).days
-                DiasCorridos+=delta
-            
-            # trabalhou um ano ja terminado do inicio ao fim
-            if ano_inicial < ano < datetime.datetime.now().year and trabalhouNesseAno > 0:
-                DiasCorridos+=365
-            
-            #Trabalhou  em ano ja terminado porem começou depois do inicio do ano
-            if ano_inicial == ano and ano != datetime.datetime.now().year:
-                fim_do_ando=datetime.datetime(ano_inicial,12,31)
-                delta=datetime.datetime(ano_inicial,12,31) - datetime.datetime(ano_inicial,mes_inicial,data_inicial.day) 
-                DiasCorridos+=delta.days
-            
-            #iniciou nesse ano atual que ainda nao acabou porem comecou depois do inicio do ano
-            if ano_inicial == ano and ano == datetime.datetime.now().year:
-                delta=(datetime.datetime.now()-datetime.datetime(ano,mes_inicial,data_inicial.day)).days
-                DiasCorridos+=delta.days
-         
+    #=============================================
+    #Anos sao selecionados
+    if len(anos)>0:
+    #=============================================
+        if len(meses)>0:
+            #anos e meses sao selecionados
+            DiasCorridos=0
+            #data_ultima_ano=p.filter(colaborador__username=usuario).last().entrada.date().year
+            for ano in anos:
+                ano=int(ano)
+                if ano >= ano_inicial:
+                    for mes in meses:
+                        trabalhouNesseMesEnesseAno = len(p.filter(colaborador__username=usuario).filter(entrada__year=ano).filter(entrada__month=mes))
+                        if mes == mes_inicial  and trabalhouNesseMesEnesseAno > 0:
+                            #conta (e soma) os dias do um mes de um ano e (caso seja o mes de entrada)  diminui do dia de entrada
+                            DiasCorridos=(DiasCorridos+monthrange(int(ano),int(mes))[1])-data_inicial.day
+                        if mes != mes_inicial  and trabalhouNesseMesEnesseAno >0:
+                            DiasCorridos+=monthrange(int(ano),int(mes))[1]          
+            return DiasCorridos 
+        #===============================================
+        #(anos sao) selecionados mas nao meses
+        else:
+        #===============================================
+            DiasCorridos=0
+            for ano in anos:
+                ano=int(ano)
+                DiasQueTrabalhouNesseAno=(p.filter(colaborador__username=usuario).filter(entrada__year=ano)).count()
+                #contando ano atual
+                if DiasQueTrabalhouNesseAno > 0:
+                    #contando ano atual
+                    if ano == datetime.datetime.now().year:
+                        #iniciou no ano atual
+                        if ano_inicial ==datetime.datetime.now().year:
+                                #diff de data atual e a data de inicio
+                                delta=(datetime.datetime.now()-datetime.datetime(ano,mes_inicial,data_inicial.day)).days
+                                DiasCorridos+=delta.days
+                        #inciou em ano anterior
+                        else:
+                            #diff do dia 1 de jan ate dia atual
+                                delta=(datetime.datetime.now()-datetime.datetime(ano,1,1)).days
+                                DiasCorridos+=delta
+                    #contando anos anteriores ao atual
+                    else:
+                        #iniciou no ano em questao?
+                        if ano_inicial == ano:
+                            fim_do_ando=datetime.datetime(ano_inicial,12,31)
+                            #caso positivo conta da data inicial ate o fim do ano
+                            delta=datetime.datetime(ano_inicial,12,31) - datetime.datetime(ano_inicial,mes_inicial,data_inicial.day) 
+                            DiasCorridos+=delta.days 
+                        else:
+                            #senao conta o ano inteiro
+                            DiasCorridos+=365 
+                    return DiasCorridos
+                else:
+                    #caso em que nao trabalhou nesse ano
+                    return 0
+    #================================================
+    #Caso em que [anos nao sao] selecionados
+    else:
+    #================================================
+        #===========
+        #meses sao
+        if len(meses)>0:
+            DiasCorridos=0
+            data_ultima_ano=p.filter(colaborador__username=usuario).last().entrada.date().year
+            for mes in meses:
+                conta_ano=0
 
-            
-        return DiasCorridos
-        
-    if len (meses) > 0 and anos == []:
-        DiasCorridos=0
-        data_ultima= data_inicial=p.filter(colaborador__username=usuario).last().entrada.date()
-        data_ultima_mes=data_ultima.month
-        data_ultima_ano=data_ultima.year
-        for mes in meses:
-            conta_ano=0
-            while ano_inicial+conta_ano <= data_ultima_ano:
-                trabalhouNesseMesEnesseAno = len(p.filter(colaborador__username=usuario).filter(entrada__year=ano_inicial+conta_ano).filter(entrada__month=mes))
-                if mes == mes_inicial  and trabalhouNesseMesEnesseAno >0:
-                    #conta (e soma) os dias do um mes de um ano e (caso seja o mes de entrada)  diminui do dia de entrada
-                    DiasCorridos=(DiasCorridos+monthrange(int(ano_inicial+conta_ano),int(mes))[1])-data_inicial.day
-                if mes != mes_inicial  and trabalhouNesseMesEnesseAno >0:
-                    DiasCorridos+= monthrange(int(ano_inicial+conta_ano),int(mes))[1]
-                conta_ano+=1
-        return DiasCorridos
-    
-    if len (meses) > 0 and  len (anos) > 0 :
-        DiasCorridos=0
-        data_ultima= data_inicial=p.filter(colaborador__username=usuario).last().entrada.date()
-        data_ultima_mes=data_ultima.month
-        data_ultima_ano=data_ultima.year
-        for ano in anos:
-            ano=int(ano)
-            if ano >= ano_inicial:
-                for mes in meses:
-                    trabalhouNesseMesEnesseAno = len(p.filter(colaborador__username=usuario).filter(entrada__year=ano).filter(entrada__month=mes))
-                    if mes == mes_inicial  and trabalhouNesseMesEnesseAno > 0:
+                while ano_inicial+conta_ano <= data_ultima_ano:
+                    trabalhouNesseMesEnesseAno = len(p.filter(colaborador__username=usuario).filter(entrada__year=ano_inicial+conta_ano).filter(entrada__month=mes))
+                    if mes == mes_inicial  and trabalhouNesseMesEnesseAno >0:
                         #conta (e soma) os dias do um mes de um ano e (caso seja o mes de entrada)  diminui do dia de entrada
-                        DiasCorridos=(DiasCorridos+monthrange(int(ano),int(mes))[1])-data_inicial.day
+                        DiasCorridos=(DiasCorridos+monthrange(int(ano_inicial+conta_ano),int(mes))[1])-data_inicial.day
                     if mes != mes_inicial  and trabalhouNesseMesEnesseAno >0:
-                        DiasCorridos+=monthrange(int(ano),int(mes))[1]
-                    
-        return DiasCorridos    
+                        DiasCorridos+= monthrange(int(ano_inicial+conta_ano),int(mes))[1]
+                    conta_ano+=1
+            return DiasCorridos
+        #==============
+        #meses nao sao   
+        else:
+            #caso em que nada é filtrado > retorna o total acumulado no banco de dados
+            DiasCorridos=p.filter(colaborador__username=usuario).last().dias_corridos
+            return DiasCorridos
 
 def ranking_filter(request):
     usuarios,anos,meses=usuarios_q_ja_iniciaram(),[],[]
@@ -112,7 +126,8 @@ def ranking_filter(request):
         print(r)
         anos,meses,usuarios=[],[],usuarios_q_ja_iniciaram()
         if "usuario" in r.keys():
-            usuarios=r.getlist('usuario')      
+            usuarios=r.getlist('usuario')
+            context['usuarios']=usuarios      
             #p=Periodo.objects.all()
             if "ano" in r.keys() and "mes" in r.keys() :
                 anos,meses=r.getlist('ano'),r.getlist('mes')
