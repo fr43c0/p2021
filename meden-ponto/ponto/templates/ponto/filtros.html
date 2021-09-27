@@ -1,10 +1,76 @@
-{% extends 'base.html' %} {% block content %} {% if user.is_authenticated and user.email not in emails %}
+{% extends 'base.html' %} {% load static %} {% block content %} {% if user.is_authenticated and user.email not in emails %}
 <!--  2021 -->
-<table>
+<style>
+    #abc1 {
+        padding: 5px 15% 5px 15%;
+        background-color: #CEA486!important;
+        border: solid black;
+        border-width: thin;
+        border-bottom: 0px !important;
+    }
+</style>
+<div id="abc1" class="container">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="d-flex">
+            <h6 style="margin-top: auto">Filtre por: </h6> &nbsp; &nbsp;&nbsp; &nbsp;
+            <div class="dropdown">
+                <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Usuários
+                    <span class="caret"></span>
+                </button>
+                <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
+                    {% for up in l %}
+                    <li>
+                        <input type="checkbox" name='usuario' type="submit" value='{{up.colaborador}}' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
+                        <label for="">{{up.colaborador}}</label>
+                    </li>
+                    {% endfor %}
+                </ul>
+                &nbsp; &nbsp;
+            </div>
+            <div class="dropdown">
+                <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Anos
+                    <span class="caret"></span>
+                </button>
+                <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
+                    {% for a in A %}
+                    <li><input type="checkbox" name='ano' type="submit" value='{{a}}' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
+                        <label for="">{{a}}</label>
+                    </li>
+                    {% endfor %}
+                </ul>
+                &nbsp; &nbsp;
+            </div>
+            <div class="dropdown">
+                <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Meses
+                <span class="caret"></span>
+            </button>
+                <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='1' class='btn btn-light'>&nbsp;<label for="">JAN</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='2' class='btn btn-light'>&nbsp;<label for="">FEV</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='3' class='btn btn-light'>&nbsp;<label for="">MAR</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='4' class='btn btn-light'>&nbsp;<label for="">ABR</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='5' class='btn btn-light'>&nbsp;<label for="">MAI</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='6' class='btn btn-light'>&nbsp;<label for="">JUN</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='7' class='btn btn-light'>&nbsp;<label for="">JUL</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='8' class='btn btn-light'>&nbsp;<label for="">AGO</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='9' class='btn btn-light'>&nbsp;<label for="">SET</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='10' class='btn btn-light'>&nbsp;<label for="">OUT</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='11' class='btn btn-light'>&nbsp;<label for="">NOV</label></li>
+                    <li><input type="checkbox" id='' name='mes' type="submit" value='12' class='btn btn-light'>&nbsp;<label for="">DEZ</label></li>
+                </ul>
+            </div> &nbsp; &nbsp;
+            <button class="btn btn-primary" type="submit">Filtrar</button>
+        </div>
+    </form>
+</div>
+
+
+<table id='rank'>
     <tr id='colab'>
-        <td>Ip</td>
-        <td>
-            <form action="" method="post">
+        <td>Ip &nbsp;<i id='0' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td> Nome &nbsp;<i id='1' class="fa fa-sort" aria-hidden="true"></i>
+            <!-- <form action="" method="post">
                 {% csrf_token %}
                 <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Nome
                                                        <span class="caret"></span>
@@ -16,10 +82,10 @@
                     </li>
                     {% endfor %}
                 </ul>
-            </form>
+            </form> -->
         </td>
-        <td>
-            <form action="" method="post">
+        <td> Data &nbsp;<i id='2' class="fa fa-sort" aria-hidden="true"></i>
+            <!-- <form action="" method="post">
                 {% csrf_token %}
 
                 <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Data
@@ -52,17 +118,17 @@
                     </ul>
                 </ul>
                 <input type="hidden" name="qual" id="qual" value={{qual}}>
-                <!-- TENTAR COM SELECT PARA VER SER ROLA MULTIPLAS COLUNAS -->
+                TENTAR COM SELECT PARA VER SER ROLA MULTIPLAS COLUNAS 
             </form>
 
             <script>
                 let a
-            </script>
+            </script> -->
         </td>
-        <td>Entrada</td>
-        <td>Saida</td>
-        <td>Jornada trabalhada</td>
-        <td>Observações</td>
+        <td>Entrada&nbsp;<i id='3' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td>Saida&nbsp;<i id='4' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td>Jornada trabalhada&nbsp;<i id='5' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td>Observações&nbsp;<i id='6' class="fa fa-sort" aria-hidden="true"></i></td>
     </tr>
     {% for periodo in p %}
     <tr id='colab'>
@@ -78,6 +144,94 @@
     <tr>
     </tr>
 </table>
+<script>
+    function sortTable(N) {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("rank");
+        switching = true;
+        /*Make a loop that will continue until
+        no switching has been done:*/
+        while (switching) {
+            // console.log('indo')
+            //start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+
+            /*Loop through all table rows (except the
+            first, which contains table headers):*/
+            for (i = 1; i < (rows.length - 1); i++) {
+                //start by saying there should be no switching:
+                shouldSwitch = false;
+                /*Get the two elements you want to compare,
+                one from current row and one from the next:*/
+                x = rows[i].getElementsByTagName("td")[N];
+                y = rows[i + 1].getElementsByTagName("td")[N];
+                //check if the two rows should switch place:
+                switch (N) {
+                    case 0:
+                        console.log(0)
+                        shouldSwitch = false;
+                        break;
+                    case 1:
+                        console.log(1)
+
+                        shouldSwitch = false;
+                        break;
+                    case 2:
+                        console.log(2)
+                        shouldSwitch = false;
+                        break;
+                    case 3:
+                        console.log(3)
+                        shouldSwitch = false;
+                        break;
+                    case 4:
+                        console.log(4)
+                        shouldSwitch = false;
+                        break;
+
+                    case 5:
+                        if (Number(x.innerHTML.replace(',', '.')) < Number(y.innerHTML.replace(',', '.'))) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    case 6:
+                        shouldSwitch = false;
+                        break;
+                }
+
+                if (Number(x.innerHTML.replace(',', '.')) < Number(y.innerHTML.replace(',', '.'))) {
+                    //if so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                // console.log('fazer troca')
+                /*If a switch has been marked, make the switch
+                and mark that a switch has been done:*/
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+
+    }
+
+    function vai() {
+        setTimeout(sortTable(Number(this.id)), 1000)
+    }
+    // Função para adicionar uma espera de evento em t
+    function load() {
+        // var el = document.getElementById("i2");
+        // el.addEventListener("click", vai, false);
+        document.querySelectorAll('.fa-sort').forEach(item => {
+            item.addEventListener('click', vai, false)
+        })
+    }
+    //adiciona a funcao load apos o documento carregar por completo
+    document.addEventListener("DOMContentLoaded", load, false);
+</script>
 {% else %}
 <h1>Área restrita</h1>
 <!--  2021 -->

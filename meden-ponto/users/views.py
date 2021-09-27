@@ -10,18 +10,12 @@ from .forms import UserRegisterForm
 from django.views.generic import ListView, TemplateView,CreateView,DeleteView,DetailView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
-from django.utils import timezone
+# from django.utils import timezone
 import datetime
 from calendar import monthrange
 from django.db.models.functions import TruncDate
+
 #calculo dos dias trabalhados:
-#filtra os periodos ja retornados na busca por usuario
-#ordena por entrada
-#count distinct datas.day de entrada
-#count distinct datas.day de saida
-
-
-
 def getDiasCorridosPorUser(usuario,anos,meses):
     p=Periodo.objects.all()
     data_inicial=p.filter(colaborador__username=usuario).last().data_inicio.date()
@@ -29,7 +23,6 @@ def getDiasCorridosPorUser(usuario,anos,meses):
     ano_inicial=data_inicial.year
     d,m,a=data_inicial,mes_inicial,ano_inicial
     print(d,m,a)
-    
     #=============================================
     #Anos sao selecionados
     if len(anos)>0:
@@ -117,50 +110,41 @@ def getDiasCorridosPorUser(usuario,anos,meses):
 def ranking_filter(request):
     usuarios,anos,meses=usuarios_q_ja_iniciaram(),[],[]
     context={}
-    QF=Periodo.objects.none()
-    L=[]
     if request.method == 'POST':
         p=Periodo.objects.all()
-        print('P>>>>>>>>>>>>> ',len(p))
         r=request.POST
-        print(r)
         anos,meses,usuarios=[],[],usuarios_q_ja_iniciaram()
         if "usuario" in r.keys():
             usuarios=r.getlist('usuario')
             context['usuarios']=usuarios      
-            #p=Periodo.objects.all()
-            if "ano" in r.keys() and "mes" in r.keys() :
-                anos,meses=r.getlist('ano'),r.getlist('mes')
-                X=p.filter(colaborador__username__in=usuarios).filter(entrada__year__in=anos).filter(entrada__month__in=meses)
-                
-            if "ano" in r.keys() and "mes"  not in r.keys() :
-                anos=r.getlist('ano')
-                X=p.filter(colaborador__username__in=usuarios).filter(entrada__year__in=anos)
-               
-            if "mes" in r.keys() and "ano"  not in r.keys() :
-                meses=r.getlist('mes')
-                X=p.filter(colaborador__username__in=usuarios).filter(entrada__month__in=meses)
-                
-            if "mes" not in r.keys() and "ano"  not in r.keys() :
-                X=p.filter(colaborador__username__in=usuarios)
-                
+            if "ano" in r.keys():
+                if "mes" in r.keys() :
+                    anos,meses=r.getlist('ano'),r.getlist('mes')
+                    X=p.filter(colaborador__username__in=usuarios).filter(entrada__year__in=anos).filter(entrada__month__in=meses)
+                else :
+                    anos=r.getlist('ano')
+                    X=p.filter(colaborador__username__in=usuarios).filter(entrada__year__in=anos)
+            else:
+                if "mes" in r.keys():
+                    meses=r.getlist('mes')
+                    X=p.filter(colaborador__username__in=usuarios).filter(entrada__month__in=meses)
+                else:
+                    X=p.filter(colaborador__username__in=usuarios)              
         else:
             p=Periodo.objects.all()
-            if "ano" in r.keys() and "mes" in r.keys() :
-                anos,meses=r.getlist('ano'),r.getlist('mes')
-                X=p.filter(entrada__year__in=anos).filter(entrada__month__in=meses)
-                print('anomes')
-            if "ano" in r.keys() and "mes"  not in r.keys() :
-                anos=r.getlist('ano')
-                X=p.filter(entrada__year__in=anos)
-                print('so-ano')
-            if "mes" in r.keys() and "ano"  not in r.keys() :
-                meses=r.getlist('mes')
-                X=p.filter(entrada__month__in=meses)
-                print('so-mes')
-            if "mes" not in r.keys() and "ano"  not in r.keys() :
-                X=p
-                print('nemanonemmes')    
+            if "ano" in r.keys():
+                if "mes" in r.keys() :
+                    anos,meses=r.getlist('ano'),r.getlist('mes')
+                    X=p.filter(entrada__year__in=anos).filter(entrada__month__in=meses)
+                else:
+                    anos=r.getlist('ano')
+                    X=p.filter(entrada__year__in=anos)                  
+            else:
+                if "mes" in r.keys():
+                    meses=r.getlist('mes')
+                    X=p.filter(entrada__month__in=meses)
+                else:
+                    X=p             
         dic={}
         LU=[]
         for u in usuarios:
@@ -174,6 +158,7 @@ def ranking_filter(request):
                 print(d_t,' ' ,u, '=============================================')
                 d_c=getDiasCorridosPorUser(u,anos,meses)
                 dic=   { 'colaborador':u,
+                        'data_inicio':i.data_inicio,
                         'dias_corridos':d_c,
                         'dias_trabalhados':d_t,
                         'horas_totais':round(total_horas,1),
@@ -182,13 +167,9 @@ def ranking_filter(request):
                         'media_h_d_t':round(total_horas/d_t,1) ,
                         }
                 LU.append(dic)
-        print(80*'-')
-        for i in LU:
-            print(f'{i}')
-        print(80*'-')
         context['LU']=LU
-        Usuarios=[]
-        l=[]
+        # Usuarios=[]
+        # l=[]
         if len(anos)==0:
             anos='Todos'
         if len(meses)==0:
@@ -199,20 +180,17 @@ def ranking_filter(request):
         EMAILS=[p.email for p in PERM]
         context['emails']=EMAILS
         # ###############################################################################
-        context['U']=Usuarios       
-        context['p']=p
+        # context['U']=Usuarios       
+        # context['p']=p
     return render(request,'users/ranking_filtrado.html',context) 
 
-
-
 #TEM UTILIDADE ESSA FUNCAO?
-def seleciona_nome(request):
-    if request.method=='POST':
-        r=request.POST
-        print(r)
-        context={}
-    return render(request,'accounts/geral.html',context) #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<essa funcao serve pra que ? o context nao foi declarado
-
+# def seleciona_nome(request):
+#     if request.method=='POST':
+#         r=request.POST
+#         print(r)
+#         context={}
+#     return render(request,'accounts/geral.html',context) #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<essa funcao serve pra que ? o context nao foi declarado
 
 def usuarios_q_ja_iniciaram():
     Usuarios=[]
@@ -249,7 +227,6 @@ def editar_permitido(request,pk):
         context['permitidos']=LIST
         return redirect('users:permitidos')
 
-
 @staff_member_required 
 def del_user(request,pk): 
     if request.method == 'POST':
@@ -267,15 +244,12 @@ def del_user(request,pk):
         messages.error(request, "Usuario nao consta no Banco de Dados!")
         print(messages.get_messages(request))
         return redirect('users:permitidos')
-
     # except Exception as e: 
     #     return render(request, 'front.html',{'err':e.message})
     LIST=Permitidos.objects.all()
     context={}
     context['permitidos']=LIST
     return redirect('users:permitidos')
-
-
 
 def register(request):
     if request.method == 'POST':
@@ -294,11 +268,6 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
-
-# class UserListView(ListView): #veio do laptop
-#     model = Periodo
-#     context_object_name = ''
-#     template_name='accounts/perfil.html'
 
 class UserListView(ListView):
     model = Periodo
@@ -323,7 +292,6 @@ class GeralListView(ListView):
 
 class RankingTemplateView(TemplateView):
     template_name='users/ranking.html'
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         Usuarios=[]
@@ -381,7 +349,6 @@ class EmailDetailView(DetailView):
     model=Permitidos
     context_object_name = 'permitido'
    
-
 class EmailDeleteView(DeleteView):
     model=Permitidos
     success_url =reverse_lazy('users:permitidos')

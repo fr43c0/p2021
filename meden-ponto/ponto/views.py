@@ -136,7 +136,9 @@ def get_horas_totais(x):
 #\INUTIL
 def status(request):
     pass
-    
+
+
+  
     
 def filtros(request):
     context={}
@@ -152,47 +154,93 @@ def filtros(request):
     context['l']=l
     filtro=Filtro.objects.all()
     context['f']=filtro
-    if request.method=='POST':
-        r=request.POST
-        if 'usuario'in r.keys():
-            nome=r['usuario']
-            context['qual']=r['usuario']
-            if nome!='Todos':
-                nome=nome.lower()
-                print(25*"=> ",nome)
-                p=Periodo.objects.all().filter(colaborador__username__iexact=nome).order_by('entrada')
-                print(25*"=> ",nome, ' ',len(p))
+    # if request.method=='POST':
+    #     r=request.POST
+    #     if 'usuario'in r.keys():
+    #         nome=r['usuario']
+    #         context['qual']=r['usuario']
+    #         if nome!='Todos':
+    #             nome=nome.lower()
+    #             print(25*"=> ",nome)
+    #             p=Periodo.objects.all().filter(colaborador__username__iexact=nome).order_by('entrada')
+    #             print(25*"=> ",nome, ' ',len(p))
+    #         else:
+    #             p=Periodo.objects.all().order_by('entrada')
+    #     if "periodo" not in r.keys():
+    #         if "qual" in r.keys() and r['qual']!="Todos" and r['qual']!='':
+    #             qual=r['qual']
+    #             if "ano" in r.keys():  
+    #                 anos=r.getlist('ano')
+    #                 if "mes" in r.keys():
+    #                     meses=r.getlist('mes')
+    #                     p=p.filter(saida__year__in=anos).filter(saida__month__in=meses).filter(colaborador__username__iexact=qual.lower())
+    #                 else:
+    #                     p=p.filter(saida__year__in=anos).filter(colaborador__username__iexact=qual.lower())
+    #             elif "mes" in r.keys():
+    #                 meses=r.getlist('mes')
+    #                 p=p.filter(saida__month__in=meses).filter(colaborador__username__iexact=qual.lower())
+    #         else:    
+    #             if "ano" in r.keys():  
+    #                 anos=r.getlist('ano')
+    #                 if "mes" in r.keys():
+    #                     meses=r.getlist('mes')
+    #                     p=p.filter(saida__year__in=anos).filter(saida__month__in=meses)
+    #                 else:
+    #                     p=p.filter(saida__year__in=anos)
+    #             elif "mes" in r.keys():
+    #                 meses=r.getlist('mes')
+    #                 p=p.filter(saida__month__in=meses)      
+    # u=User.objects.all()
+    # context['u']=u
+    # context['p']=p
+    # #context={'l':l,'u':u,'p':p,'f':filtro,}
+    # context['c']=context
+    from django.db.models.functions import TruncDate
+    if request.method == 'POST':
+            p=Periodo.objects.all()
+            r=request.POST
+            anos,meses,usuarios=[],[],usuarios_q_ja_iniciaram()
+            if "usuario" in r.keys():
+                usuarios=r.getlist('usuario')
+                context['usuarios']=usuarios      
+                if "ano" in r.keys():
+                    if "mes" in r.keys() :
+                        anos,meses=r.getlist('ano'),r.getlist('mes')
+                        X=p.filter(colaborador__username__in=usuarios).filter(entrada__year__in=anos).filter(entrada__month__in=meses)
+                    else :
+                        anos=r.getlist('ano')
+                        X=p.filter(colaborador__username__in=usuarios).filter(entrada__year__in=anos)
+                else:
+                    if "mes" in r.keys():
+                        meses=r.getlist('mes')
+                        X=p.filter(colaborador__username__in=usuarios).filter(entrada__month__in=meses)
+                    else:
+                        X=p.filter(colaborador__username__in=usuarios)              
             else:
-                p=Periodo.objects.all().order_by('entrada')
-        if "periodo" not in r.keys():
-            if "qual" in r.keys() and r['qual']!="Todos" and r['qual']!='':
-                qual=r['qual']
-                if "ano" in r.keys():  
-                    anos=r.getlist('ano')
+                p=Periodo.objects.all()
+                if "ano" in r.keys():
+                    if "mes" in r.keys() :
+                        anos,meses=r.getlist('ano'),r.getlist('mes')
+                        X=p.filter(entrada__year__in=anos).filter(entrada__month__in=meses)
+                    else:
+                        anos=r.getlist('ano')
+                        X=p.filter(entrada__year__in=anos)                  
+                else:
                     if "mes" in r.keys():
                         meses=r.getlist('mes')
-                        p=p.filter(saida__year__in=anos).filter(saida__month__in=meses).filter(colaborador__username__iexact=qual.lower())
+                        X=p.filter(entrada__month__in=meses)
                     else:
-                        p=p.filter(saida__year__in=anos).filter(colaborador__username__iexact=qual.lower())
-                elif "mes" in r.keys():
-                    meses=r.getlist('mes')
-                    p=p.filter(saida__month__in=meses).filter(colaborador__username__iexact=qual.lower())
-            else:    
-                if "ano" in r.keys():  
-                    anos=r.getlist('ano')
-                    if "mes" in r.keys():
-                        meses=r.getlist('mes')
-                        p=p.filter(saida__year__in=anos).filter(saida__month__in=meses)
-                    else:
-                        p=p.filter(saida__year__in=anos)
-                elif "mes" in r.keys():
-                    meses=r.getlist('mes')
-                    p=p.filter(saida__month__in=meses)      
-    u=User.objects.all()
-    context['u']=u
-    context['p']=p
-    #context={'l':l,'u':u,'p':p,'f':filtro,}
-    context['c']=context
+                        X=p             
+            dic={}
+            periodos=[]
+            for u in usuarios:
+                XU=X.filter(colaborador__username=u)
+                if XU.count()>0:
+                    for i in XU:
+                        print(i,i.ip_address)
+                        periodos.append(i)
+            
+            context['p']=periodos
     # ###############################################################################PASSANDO OS EMAILS DOS ESTAGIARIOS PARA O CONTEXT 
     PERM=Permitidos.objects.filter(estagiario=True)
     EMAILS=[perm.email for perm in PERM]
