@@ -20,7 +20,7 @@
                     <li><input id='entrada' name='usuario' type="submit" value='Todos' class='btn btn-light'></li>
                     {% for up in l %}
 
-                    <li> <input id='entrada' name='usuario' type="submit" value={ {up.colaborador|title}} class='btn btn-light'>
+                    <li> <input id='entrada' name='usuario' type="submit" value={{up.colaborador|title}} class='btn btn-light'>
                     </li>
                     {% endfor %}
 
