@@ -73,3 +73,12 @@
         width: 20px;
         height: 20px;
     }
+    
+    .ckbx {
+        width: 20px !important;
+        height: 20px !important;
+    }
+    
+    input[type="radio"] {
+        width: 20px;
+    }

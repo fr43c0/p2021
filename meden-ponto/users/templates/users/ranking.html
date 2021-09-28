@@ -42,13 +42,13 @@
     <div class="d-flex">
         <h6 style="margin-top: auto">Filtre por: </h6> &nbsp; &nbsp;
         <div class="dropdown">
-            <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Usuários
+            <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown">Usuários
                 <span class="caret"></span>
             </button>
             <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                 {% for u in U %}
                 <li>
-                    <input type="checkbox" name='usuario' type="submit" value='{{u.colaborador}}' class='btn btn-light'> &nbsp;
+                    <input type="checkbox" name='usuario' type="submit" value='{{u.colaborador}}' class='btn btn-info'> &nbsp;
                     <label for="">{{u.colaborador}}</label>
                 </li>
                 {% endfor %}
@@ -56,12 +56,12 @@
             &nbsp; &nbsp;
         </div>
         <div class="dropdown">
-            <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Anos
+            <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown">Anos
                 <span class="caret"></span>
             </button>
             <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                 {% for a in A %}
-                <li><input type="checkbox" name='ano' type="submit" value='{{a}}' class='btn btn-light'> &nbsp;
+                <li><input type="checkbox" name='ano' type="submit" value='{{a}}' class='btn btn-info'> &nbsp;
                     <label for="">{{a}}</label>
                 </li>
                 {% endfor %}
@@ -69,25 +69,25 @@
             &nbsp; &nbsp;
         </div>
         <div class="dropdown">
-            <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Meses
+            <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown">Meses
             <span class="caret"></span>
         </button>
-            <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
-                <li><input type="checkbox" id='' name='mes' type="submit" value='1' class='btn btn-light'>&nbsp;<label for="">JAN</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='2' class='btn btn-light'>&nbsp;<label for="">FEV</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='3' class='btn btn-light'>&nbsp;<label for="">MAR</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='4' class='btn btn-light'>&nbsp;<label for="">ABR</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='5' class='btn btn-light'>&nbsp;<label for="">MAI</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='6' class='btn btn-light'>&nbsp;<label for="">JUN</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='7' class='btn btn-light'>&nbsp;<label for="">JUL</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='8' class='btn btn-light'>&nbsp;<label for="">AGO</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='9' class='btn btn-light'>&nbsp;<label for="">SET</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='10' class='btn btn-light'>&nbsp;<label for="">OUT</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='11' class='btn btn-light'>&nbsp;<label for="">NOV</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='12' class='btn btn-light'>&nbsp;<label for="">DEZ</label></li>
+            <ul style="padding: 5px 15px 5px 15px; width:max-content" class="dropdown-menu" data-flip="false">
+                <li><input type="checkbox" id='' name='mes' type="submit" value='1' class='btn btn-info'>&nbsp;<label for="">JAN</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='2' class='btn btn-info'>&nbsp;<label for="">FEV</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='3' class='btn btn-info'>&nbsp;<label for="">MAR</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='4' class='btn btn-info'>&nbsp;<label for="">ABR</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='5' class='btn btn-info'>&nbsp;<label for="">MAI</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='6' class='btn btn-info'>&nbsp;<label for="">JUN</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='7' class='btn btn-info'>&nbsp;<label for="">JUL</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='8' class='btn btn-info'>&nbsp;<label for="">AGO</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='9' class='btn btn-info'>&nbsp;<label for="">SET</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='10' class='btn btn-info'>&nbsp;<label for="">OUT</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='11' class='btn btn-info'>&nbsp;<label for="">NOV</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='12' class='btn btn-info'>&nbsp;<label for="">DEZ</label></li>
             </ul>
         </div> &nbsp; &nbsp;
-        <button class="btn btn-primary" type="submit">Selecionar</button>
+        <button class="btn btn-info" type="submit">Selecionar</button>
     </div>
 
 </form>

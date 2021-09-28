@@ -1,45 +1,31 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %} {{user.id}} teste {% endblock title %} {% block body %} {% if user.is_authenticated %}
+<h3>{{user|title}}</h3>
+<!-- <h5>Data de inicio: {{periodo_list.last.entrada|date:"Y-m-d"}}</h5> -->
+<table>
+    <tr id='colab'>
+        <td>ip</td>
+        <td>data</td>
+        <td>entrada</td>
+        <td>saida</td>
+        <td>jornada trabalhada</td>
 
 
+    </tr>
 
-{% block title %}
-    {{user.id}} teste
-{% endblock title %}
+    {% for periodo in periodo_list %} {% if periodo.colaborador.username == user.username %}
+    <tr id='colab'>
+        <td> {{periodo.ip_address}} </td>
+        <td> {{periodo.entrada|date:"d/m/y"}} </td>
+        <td> {{periodo.entrada|time:"H:i:s"}} </td>
+        <td> {{periodo.saida|time:"H:i:s"}} </td>
+        <td> {{periodo.jornada|floatformat:"1" }}</td>
 
 
-{% block body %}
-{% if user.is_authenticated %}
-    <h3>{{user|title}}</h3>
-    <!-- <h5>Data de inicio: {{periodo_list.last.entrada|date:"Y-m-d"}}</h5> -->
-    <table>
-            <tr id='colab'>
-                    <td>ip</td>
-                    <td>data</td>
-                    <td>entrada</td>
-                    <td>saida</td>
-                    <td>jornada trabalhada</td>
-                    
-                  
-            </tr>
-        
-            {% for periodo  in periodo_list %}
-            {% if periodo.colaborador.username == user.username %} 
-            <tr id='colab'>
-                        <td> {{periodo.ip_address}}           </td>
-                        <td> {{periodo.entrada|date:"d/m/y"}}         </td>
-                        <td> {{periodo.entrada|time:"H:i:s"}} </td> 
-                        <td> {{periodo.saida|time:"H:i:s"}}   </td> 
-                        <td> {{periodo.jornada|floatformat:"1" }}</td>
-                        
-                    
-            </tr>
-            {% endif %}
-            {% endfor %}
-       
-            <tr>
-             
-            </tr>
-    </table>
-    {% endif %}
+    </tr>
+    {% endif %} {% endfor %}
 
-{% endblock body %}
+    <tr>
+
+    </tr>
+</table>
+{% endif %} {% endblock body %}

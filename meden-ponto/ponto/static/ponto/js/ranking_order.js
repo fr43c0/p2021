@@ -3,7 +3,11 @@
 
 
 
-
+function convertToTimestamp(d) {
+    let data = d.split("/")
+    let ddtt = new Date(data[2], data[1], data[0])
+    return ddtt.getTime()
+}
 
 function sortTable(N) {
     var table, rows, switching, i, x, y, shouldSwitch;
@@ -27,11 +31,22 @@ function sortTable(N) {
             x = rows[i].getElementsByTagName("td")[N];
             y = rows[i + 1].getElementsByTagName("td")[N];
             //check if the two rows should switch place:
-            if (Number(x.innerHTML.replace(',', '.')) < Number(y.innerHTML.replace(',', '.'))) {
-                //if so, mark as a switch and break the loop:
-                shouldSwitch = true;
-                break;
+            if (N == 1) {
+
+                xd = convertToTimestamp(x.innerHTML)
+                yd = convertToTimestamp(y.innerHTML)
+                if (xd < yd) {
+                    shouldSwitch = true;
+                    break;
+                }
+            } else {
+                if (Number(x.innerHTML.replace(',', '.')) < Number(y.innerHTML.replace(',', '.'))) {
+                    //if so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
             }
+
         }
         if (shouldSwitch) {
             // console.log('fazer troca')

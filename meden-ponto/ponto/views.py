@@ -3,10 +3,10 @@ from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 from .models import Periodo,Entraram,Obs,Filtro
 from users.models import Permitidos ######2021
-from django.http import HttpResponse
+# from django.http import HttpResponse
 from django.utils import timezone
-import datetime
-import json
+# import datetime
+# import json
 import pytz
 tz=pytz.timezone('America/Sao_Paulo')
 u=User.objects.all()
@@ -133,13 +133,9 @@ def get_horas_totais(x):
         total=total+j
     return total
 
-#\INUTIL
 def status(request):
     pass
 
-
-  
-    
 def filtros(request):
     context={}
     p=Periodo.objects.all().order_by('entrada')
@@ -195,10 +191,26 @@ def filtros(request):
     # context['p']=p
     # #context={'l':l,'u':u,'p':p,'f':filtro,}
     # context['c']=context
-    from django.db.models.functions import TruncDate
+    # from django.db.models.functions import TruncDate
     if request.method == 'POST':
+           
+            Q=Periodo.objects.none()
             p=Periodo.objects.all()
             r=request.POST
+            # if 'ordenar_por' in r:
+            #     if 'fav_order' in r :
+            #         if r['fav_order'] =="D":
+            #             p=p.order_by(f"-{r['ordenar_por']}")
+            #         else:
+            #             p=p.order_by(r['ordenar_por'])
+            # else:
+            #     if 'fav_order' in r :
+            #         if r['fav_order'] =="D":
+            #             p=p.order_by('-entrada')
+            #         else:
+            #             p=p.order_by('entrada') 
+                
+            # print(r)
             anos,meses,usuarios=[],[],usuarios_q_ja_iniciaram()
             if "usuario" in r.keys():
                 usuarios=r.getlist('usuario')
@@ -217,7 +229,7 @@ def filtros(request):
                     else:
                         X=p.filter(colaborador__username__in=usuarios)              
             else:
-                p=Periodo.objects.all()
+                #p=Periodo.objects.all()
                 if "ano" in r.keys():
                     if "mes" in r.keys() :
                         anos,meses=r.getlist('ano'),r.getlist('mes')
@@ -231,16 +243,48 @@ def filtros(request):
                         X=p.filter(entrada__month__in=meses)
                     else:
                         X=p             
-            dic={}
             periodos=[]
-            for u in usuarios:
-                XU=X.filter(colaborador__username=u)
-                if XU.count()>0:
-                    for i in XU:
-                        print(i,i.ip_address)
-                        periodos.append(i)
-            
-            context['p']=periodos
+            if X!=p:
+                for u in usuarios:
+                    XU=X.filter(colaborador__username=u)
+                    if XU.count()>0:
+                        for i in XU:
+                            Q|=Periodo.objects.filter(pk=i.pk)
+                            periodos.append(i)
+                #if 
+                #inutil            
+                ids=[p.id for p in periodos]
+                print(f'ids {ids}')
+                print(f'==================>{Q.count()}')
+                if Q.count()>0:
+                    context['totla']= Q.count()
+                    if 'ordenar_por' in r:
+                        if "fav_order" in r and r['fav_order']=="D":
+                            Qp=Q.order_by(f"-{r['ordenar_por']}")
+                        else:
+                           Qp=Q.order_by(r['ordenar_por'])
+                    else:
+                        Qp=Q
+                else:
+                    context.pop('p')
+                context['p']=Qp
+                context['total']=Qp.count()    
+            else:
+              
+                if 'ordenar_por' in r:
+                    if 'fav_order' in r :
+                        if r['fav_order'] =="D":
+                            p=p.order_by(f"-{r['ordenar_por']}")
+                        else:
+                            p=p.order_by(r['ordenar_por'])
+                else:
+                    if 'fav_order' in r :
+                        if r['fav_order'] =="D":
+                            p=p.order_by('-entrada')
+                        else:
+                            p=p.order_by('entrada')
+                context['p']=p
+                context['total'] =p.count()                  
     # ###############################################################################PASSANDO OS EMAILS DOS ESTAGIARIOS PARA O CONTEXT 
     PERM=Permitidos.objects.filter(estagiario=True)
     EMAILS=[perm.email for perm in PERM]
