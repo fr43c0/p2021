@@ -4,17 +4,11 @@
     #abc1 {
         padding: 5px 5px;
         /*background-color: #CEA486!important;
-        border: solid black;
-        border-width: thin;
-        border-bottom: 0px !important;*/
+            border: solid black;
+            border-width: thin;
+            border-bottom: 0px !important;*/
     }
 </style>
-{% if total %}
-<div class="alert alert-success" role="alert">
-    Resultado da busca: {{total}} linhas!
-</div>
-
-{% endif %}
 <div id="abc1" class="container">
     <form action="" method="POST">
         {% csrf_token %}
@@ -22,8 +16,8 @@
             <h4 style="margin-top: auto">Filtre por: </h4> &nbsp; &nbsp;&nbsp; &nbsp;
             <div class="dropdown">
                 <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown">Usuários
-                    <span class="caret"></span>
-                </button>
+                            <span class="caret"></span>
+                        </button>
                 <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                     {% for up in l %}
                     <li>
@@ -36,12 +30,12 @@
             </div>
             <div class="dropdown">
                 <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown">Anos
-                    <span class="caret"></span>
-                </button>
+                            <span class="caret"></span>
+                        </button>
                 <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                     {% for a in A %}
-                    <li><input type="checkbox" class="ckbx" name='ano' type="submit" value='{{a}}' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
-                        <label for="">{{a}}</label>
+                    <li><input type="checkbox" class="ckbx" name='ano' type="submit" value='{{a.entrada__year}}' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
+                        <label for="">{{a.entrada__year}}</label>
                     </li>
                     {% endfor %}
                 </ul>
@@ -49,8 +43,8 @@
             </div>
             <div class="dropdown">
                 <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown">Meses
-                <span class="caret"></span>
-            </button>
+                        <span class="caret"></span>
+                    </button>
                 <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                     <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='1' class='btn btn-light'>&nbsp;<label for="">JAN</label></li>
                     <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='2' class='btn btn-light'>&nbsp;<label for="">FEV</label></li>
@@ -69,8 +63,8 @@
             <h4 style="margin-top: auto">Ordenar por: </h4> &nbsp; &nbsp;&nbsp; &nbsp;
             <div class="dropdown">
                 <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown">Coluna
-                    <span class="caret"></span>
-                </button>
+                            <span class="caret"></span>
+                        </button>
                 <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
 
                     <li>
@@ -82,7 +76,7 @@
                         <label for="">Nome</label>
                     </li>
                     <li>
-                        <input type="checkbox" class="ckbx" name='ordenar_por' id="check3" onclick="selectOnlyThis(this.id)" type="submit" value='entrada__year' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
+                        <input type="checkbox" class="ckbx" name='ordenar_por' id="check3" onclick="selectOnlyThis(this.id)" type="submit" value='entrada' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
                         <label for="">Data</label>
                     </li>
                     <li>
@@ -113,66 +107,12 @@
     </form>
 </div>
 
-
 <table id='rank'>
     <tr id='colab'>
+        <td>#</td>
         <td>Ip </td>
-        <td> Nome
-            <!-- <form action="" method="post">
-                {% csrf_token %}
-                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Nome
-                                                       <span class="caret"></span>
-                                                   </button>
-                <ul class="dropdown-menu">
-                    <li><input id='entrada' name='usuario' type="submit" value='Todos' class='btn btn-light'></li>
-                    {% for up in l %}
-                    <li> <input id='entrada' name='usuario' type="submit" value={{up.colaborador|title}} class='btn btn-light'>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </form> -->
-        </td>
-        <td> Data
-            <!-- <form action="" method="post">
-                {% csrf_token %}
-
-                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Data
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><input id='entrada' name='periodo' type="submit" value='Todas' class='btn btn-light'></li>
-
-                    <button class=" btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Período
-                        <span class="caret"></span>
-                    </button>
-                    <ul style="padding-left:15px;columns: 3;" class="dropdown-menu">
-                        {% for a in A %}
-                        <li><input type="checkbox" class="ckbx" id='' name='ano' type="submit" value={{a}} class='btn btn-light'>&nbsp;<label for="">{{a}}</label></li>
-                        {% endfor %}
-                        <hr>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='1' class='btn btn-light'>&nbsp;<label for="">JAN</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='2' class='btn btn-light'>&nbsp;<label for="">FEV</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='3' class='btn btn-light'>&nbsp;<label for="">MAR</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='4' class='btn btn-light'>&nbsp;<label for="">ABR</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='5' class='btn btn-light'>&nbsp;<label for="">MAI</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='6' class='btn btn-light'>&nbsp;<label for="">JUN</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='7' class='btn btn-light'>&nbsp;<label for="">JUL</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='8' class='btn btn-light'>&nbsp;<label for="">AGO</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='9' class='btn btn-light'>&nbsp;<label for="">SET</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='10' class='btn btn-light'>&nbsp;<label for="">OUT</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='11' class='btn btn-light'>&nbsp;<label for="">NOV</label></li>
-                        <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='12' class='btn btn-light'>&nbsp;<label for="">DEZ</label></li>
-                        <li> <button class="btn btn-primary" type="submit">Selecionar</button></li>
-                    </ul>
-                </ul>
-                <input type="hidden" name="qual" id="qual" value={{qual}}>
-                TENTAR COM SELECT PARA VER SER ROLA MULTIPLAS COLUNAS 
-            </form>
-
-            <script>
-                let a
-            </script> -->
-        </td>
+        <td> Nome</td>
+        <td> Data</td>
         <td>Entrada</td>
         <td>Saida</td>
         <td>Jornada trabalhada</td>
@@ -180,6 +120,7 @@
     </tr>
     {% if p %} {% for periodo in p %}
     <tr id='colab'>
+        <td>{{forloop.counter}}</td>
         <td> {{periodo.ip_address}} </td>
         <td> {{periodo.colaborador|title}}</td>
         <td> {{periodo.entrada|date:"d/m/y"}} </td>
@@ -188,17 +129,14 @@
         <td> {{periodo.jornada|floatformat:"1"}}</td>
         <td style="width:40%;"> {{periodo.observacoes}}</td>
     </tr>
-    {% endfor %} {% else %}
-    <div class="alert alert-danger" role="alert">
-        Sem resultados para essa busca!
-    </div>
-
-    {% endif %}
+    {% endfor %} {% endif %}
     <tr>
     </tr>
 </table>
 
+<!-- if is is_authenticated -->
 {% else %}
 <h1>Área restrita</h1>
+
 <!--  2021 -->
 {% endif %} {% endblock content %}

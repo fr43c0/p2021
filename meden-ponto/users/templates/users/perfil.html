@@ -3,24 +3,25 @@
 <!-- <h5>Data de inicio: {{periodo_list.last.entrada|date:"Y-m-d"}}</h5> -->
 <table>
     <tr id='colab'>
+        <td>#</td>
         <td>ip</td>
         <td>data</td>
         <td>entrada</td>
         <td>saida</td>
         <td>jornada trabalhada</td>
-
+        <td>obs</td>
 
     </tr>
-
-    {% for periodo in periodo_list %} {% if periodo.colaborador.username == user.username %}
+    {% for periodo in periodos %} {% if periodo.colaborador.username == user.username %}
     <tr id='colab'>
+
+        <td>{{forloop.counter}}</td>
         <td> {{periodo.ip_address}} </td>
         <td> {{periodo.entrada|date:"d/m/y"}} </td>
         <td> {{periodo.entrada|time:"H:i:s"}} </td>
         <td> {{periodo.saida|time:"H:i:s"}} </td>
         <td> {{periodo.jornada|floatformat:"1" }}</td>
-
-
+        <td> {{periodo.observacoes}}</td>
     </tr>
     {% endif %} {% endfor %}
 

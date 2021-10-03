@@ -13,7 +13,8 @@ urlpatterns = [
 
     
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'),{'next_page': '/login'}, name='logout'),
-    path('profile/',user_views.UserListView.as_view(template_name='users/perfil.html'),name='perfil'),
+    # path('profile/',user_views.UserListView.as_view(template_name='users/perfil.html'),name='perfil'),
+    path('profile/',user_views.userProfile, name='perfil'),
     path('geral/',user_views.GeralListView.as_view(template_name='users/geral.html'),name='geral'),#
     path('ranking/',user_views.RankingTemplateView.as_view(template_name='users/ranking.html'),name='ranking'),
     path('ranking/filtro',user_views.ranking_filter,name='ranking_filtrado'),

@@ -1,4 +1,6 @@
+from django.db.models.expressions import F, OrderBy
 from django.shortcuts import render
+from django.contrib import messages
 from django.views.generic import TemplateView 
 from django.contrib.auth.models import User
 from .models import Periodo,Entraram,Obs,Filtro
@@ -41,7 +43,10 @@ def usuarios_q_ja_iniciaram():
         if i in p:
             Usuarios.append(i)
             #print(Usuarios)
-    #retorna lista de  usuario/Periodo salvos 
+    #retorna lista de  usuario/Periodo salvos
+    # 
+    # U=Periodo.objects.all().values("colaborador__username").distinct() 
+    # Usuarios=[u['colaborador__username'] for u in U]
     return Usuarios
 
 #CRIA UMA VARIAVEL DA INSTANCIA DE CADA MODEL - COM NOME DO USUARIO - E NADA MAIS POREM NAO SALVA ESSA INSTANCIA...
@@ -89,15 +94,16 @@ def get_context(context,request):
 
 
 #VERIFICAR UTILIDADE DESSA FUNCAO POIS PARECE QUE NAO ESTA SENDO USADA
-def apaga_objetos_obs(x):# substitui user por x aqui   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    try:
-        oo=Obs.objects.filter(colaborador__username=x)# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        print('oooooooooooooo',len(oo), oo)
-        while len(oo)>0:
-            oo[0].delete()#PARA APAGAR TODOS OS OBJETOS OBS!!!       
-    except Exception as e:
-        print('apaga objetos obs ', e)
-        pass
+# def apaga_objetos_obs(x):# substitui user por x aqui   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#     try:
+#         oo=Obs.objects.filter(colaborador__username=x)# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#         print('oooooooooooooo',len(oo), oo)
+#         while len(oo)>0:
+#             oo[0].delete()#PARA APAGAR TODOS OS OBJETOS OBS!!!       
+#     except Exception as e:
+#         print('apaga objetos obs ', e)
+#         pass
+
 # ESTA HAVENDO UM ERRO NO DIAS CORRIDOS QUANDO ENTRA NO MESMO DIA DA DIVISAO POR ZERO
 def get_dias_corridos(inicio):
         hoje=timezone.now()
@@ -107,8 +113,8 @@ def get_dias_corridos(inicio):
         else:
             dias=delta.days
             dias_corridos=dias
-        if dias_corridos == 0:#<<<<<<<<<<<<<<<<<<<<<<
-            dias_corridos=1   #<<<<<<<<<<<<<<<<<<<<<<
+        if dias_corridos == 0:#<<<<<<<<<<<<<<<<<<<<<<Fiz esse bacalhau pra concertar o erro
+            dias_corridos=1 # talvez seja o caso em que nao chega a dar 24h portanto nao tem 1 dia  
         return dias_corridos
 
 def get_dias_trabalhados(x):
@@ -136,82 +142,22 @@ def get_horas_totais(x):
 def status(request):
     pass
 
+
+def ordenarQuery(query,param):
+    pass
+
 def filtros(request):
-    context={}
     p=Periodo.objects.all().order_by('entrada')
-    A=[]
-    #Pega os anos de uso do APP em uso
-    for i in p:
-        if i.saida.year not in A:
-            A.append(i.saida.year) 
-    context['A']=A
+    context={}
     context['p']=p
-    l=usuarios_q_ja_iniciaram()
-    context['l']=l
-    filtro=Filtro.objects.all()
-    context['f']=filtro
-    # if request.method=='POST':
-    #     r=request.POST
-    #     if 'usuario'in r.keys():
-    #         nome=r['usuario']
-    #         context['qual']=r['usuario']
-    #         if nome!='Todos':
-    #             nome=nome.lower()
-    #             print(25*"=> ",nome)
-    #             p=Periodo.objects.all().filter(colaborador__username__iexact=nome).order_by('entrada')
-    #             print(25*"=> ",nome, ' ',len(p))
-    #         else:
-    #             p=Periodo.objects.all().order_by('entrada')
-    #     if "periodo" not in r.keys():
-    #         if "qual" in r.keys() and r['qual']!="Todos" and r['qual']!='':
-    #             qual=r['qual']
-    #             if "ano" in r.keys():  
-    #                 anos=r.getlist('ano')
-    #                 if "mes" in r.keys():
-    #                     meses=r.getlist('mes')
-    #                     p=p.filter(saida__year__in=anos).filter(saida__month__in=meses).filter(colaborador__username__iexact=qual.lower())
-    #                 else:
-    #                     p=p.filter(saida__year__in=anos).filter(colaborador__username__iexact=qual.lower())
-    #             elif "mes" in r.keys():
-    #                 meses=r.getlist('mes')
-    #                 p=p.filter(saida__month__in=meses).filter(colaborador__username__iexact=qual.lower())
-    #         else:    
-    #             if "ano" in r.keys():  
-    #                 anos=r.getlist('ano')
-    #                 if "mes" in r.keys():
-    #                     meses=r.getlist('mes')
-    #                     p=p.filter(saida__year__in=anos).filter(saida__month__in=meses)
-    #                 else:
-    #                     p=p.filter(saida__year__in=anos)
-    #             elif "mes" in r.keys():
-    #                 meses=r.getlist('mes')
-    #                 p=p.filter(saida__month__in=meses)      
-    # u=User.objects.all()
-    # context['u']=u
-    # context['p']=p
-    # #context={'l':l,'u':u,'p':p,'f':filtro,}
-    # context['c']=context
-    # from django.db.models.functions import TruncDate
+    context['A']=Periodo.objects.all().values('entrada__year').distinct()
+    context['l']=usuarios_q_ja_iniciaram()
     if request.method == 'POST':
-           
-            Q=Periodo.objects.none()
-            p=Periodo.objects.all()
             r=request.POST
-            # if 'ordenar_por' in r:
-            #     if 'fav_order' in r :
-            #         if r['fav_order'] =="D":
-            #             p=p.order_by(f"-{r['ordenar_por']}")
-            #         else:
-            #             p=p.order_by(r['ordenar_por'])
-            # else:
-            #     if 'fav_order' in r :
-            #         if r['fav_order'] =="D":
-            #             p=p.order_by('-entrada')
-            #         else:
-            #             p=p.order_by('entrada') 
-                
-            # print(r)
+            #cria um queryset vazio do model Periodos
+            Q=Periodo.objects.none()
             anos,meses,usuarios=[],[],usuarios_q_ja_iniciaram()
+            #caso usuarios tenham sido selecionados
             if "usuario" in r.keys():
                 usuarios=r.getlist('usuario')
                 context['usuarios']=usuarios      
@@ -228,8 +174,8 @@ def filtros(request):
                         X=p.filter(colaborador__username__in=usuarios).filter(entrada__month__in=meses)
                     else:
                         X=p.filter(colaborador__username__in=usuarios)              
+            #caso usuarios nao tenham sido selecionados
             else:
-                #p=Periodo.objects.all()
                 if "ano" in r.keys():
                     if "mes" in r.keys() :
                         anos,meses=r.getlist('ano'),r.getlist('mes')
@@ -242,54 +188,61 @@ def filtros(request):
                         meses=r.getlist('mes')
                         X=p.filter(entrada__month__in=meses)
                     else:
-                        X=p             
-            periodos=[]
+                        X=p
+                #todos os casos acima retornam um queryset == X, caso nada tenha sido escolhido X=p              
+            
+            #Havendo algum tipo de filtro que reduza a queryset p:
             if X!=p:
                 for u in usuarios:
                     XU=X.filter(colaborador__username=u)
                     if XU.count()>0:
                         for i in XU:
+                            #Q|= append os objetos i no queryset Q
                             Q|=Periodo.objects.filter(pk=i.pk)
-                            periodos.append(i)
-                #if 
-                #inutil            
-                ids=[p.id for p in periodos]
-                print(f'ids {ids}')
-                print(f'==================>{Q.count()}')
+                #busca retoran algum resultado?
                 if Q.count()>0:
-                    context['totla']= Q.count()
+                    context['total']= Q.count()
+                    #verifica qual campo dever ordenar a resposta  
                     if 'ordenar_por' in r:
+                        #e se sera crescente ou decrescente(D)
                         if "fav_order" in r and r['fav_order']=="D":
                             Qp=Q.order_by(f"-{r['ordenar_por']}")
                         else:
-                           Qp=Q.order_by(r['ordenar_por'])
+                            #crescente
+                            Qp=Q.order_by(r['ordenar_por'])
                     else:
                         Qp=Q
+                    context['p']=Qp
+                    context['total']=Qp.count()
+                    print(f'p.conutn=========>{Q.count()}')
+                    messages.success(request, f'Busca retornou {Q.count()} linhas!')
+                #busca nao tem resultados
                 else:
                     context.pop('p')
-                context['p']=Qp
-                context['total']=Qp.count()    
+                    messages.error(request,'Nenhum resultado encontrado!')
+            #Para o caso de nenhum filtro ter sido aplicado ou seja o queryset é "p"
             else:
-              
+                #procede o ordenamento como acima
                 if 'ordenar_por' in r:
-                    if 'fav_order' in r :
-                        if r['fav_order'] =="D":
-                            p=p.order_by(f"-{r['ordenar_por']}")
-                        else:
-                            p=p.order_by(r['ordenar_por'])
+                    if 'fav_order' in r  and r['fav_order']=="D":
+                        p=p.order_by(f"-{r['ordenar_por']}")
+                    else:
+                        p=p.order_by(r['ordenar_por'])
+                    
                 else:
-                    if 'fav_order' in r :
-                        if r['fav_order'] =="D":
-                            p=p.order_by('-entrada')
-                        else:
-                            p=p.order_by('entrada')
+                    if 'fav_order' in r  and r['fav_order']=="D":
+                        p=p.order_by('-entrada')
+                    else:
+                        p=p.order_by('entrada')
+                    
                 context['p']=p
-                context['total'] =p.count()                  
+                print(f'p.conutn=========>{p.count()}')
+                messages.success(request,f'Busca retornou {p.count()} linhas!')
+
     # ###############################################################################PASSANDO OS EMAILS DOS ESTAGIARIOS PARA O CONTEXT 
     PERM=Permitidos.objects.filter(estagiario=True)
     EMAILS=[perm.email for perm in PERM]
     context['emails']=EMAILS
-    context['A']=A
     # ###############################################################################  
     #print(f'context {context}')
     return render(request,'ponto/filtros.html',context)

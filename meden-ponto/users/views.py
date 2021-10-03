@@ -11,6 +11,7 @@ from django.views.generic import ListView, TemplateView,CreateView,DeleteView,De
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 # from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin 
 import datetime
 from calendar import monthrange
 from django.db.models.functions import TruncDate
@@ -107,6 +108,7 @@ def getDiasCorridosPorUser(usuario,anos,meses):
             DiasCorridos=p.filter(colaborador__username=usuario).last().dias_corridos
             return DiasCorridos
 
+@staff_member_required 
 def ranking_filter(request):
     usuarios,anos,meses=usuarios_q_ja_iniciaram(),[],[]
     context={}
@@ -131,7 +133,7 @@ def ranking_filter(request):
                 else:
                     X=p.filter(colaborador__username__in=usuarios)              
         else:
-            p=Periodo.objects.all()
+            # p=Periodo.objects.all()
             if "ano" in r.keys():
                 if "mes" in r.keys() :
                     anos,meses=r.getlist('ano'),r.getlist('mes')
@@ -168,29 +170,17 @@ def ranking_filter(request):
                         }
                 LU.append(dic)
         context['LU']=LU
-        # Usuarios=[]
-        # l=[]
         if len(anos)==0:
-            anos='Todos'
+            anos=['Todos']
         if len(meses)==0:
-            meses='Todos'
+            meses=['Todos']
         context['anos']=anos
         context['meses']=meses
         PERM=Permitidos.objects.filter(estagiario=True)
         EMAILS=[p.email for p in PERM]
         context['emails']=EMAILS
-        # ###############################################################################
-        # context['U']=Usuarios       
-        # context['p']=p
     return render(request,'users/ranking_filtrado.html',context) 
 
-#TEM UTILIDADE ESSA FUNCAO?
-# def seleciona_nome(request):
-#     if request.method=='POST':
-#         r=request.POST
-#         print(r)
-#         context={}
-#     return render(request,'accounts/geral.html',context) #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<essa funcao serve pra que ? o context nao foi declarado
 
 def usuarios_q_ja_iniciaram():
     Usuarios=[]
@@ -218,10 +208,16 @@ def editar_permitido(request,pk):
                 P.estagiario=False
                 P.save()
                 print(P.email)
+                messages.success(request, f"Usuario {P.email}  salvo com cargo de EFETIVADO!")  
             if r['cargo'] == 'estagiario':
                 P=Permitidos.objects.get(pk=pk)
                 P.estagiario=True
-                P.save()
+                P.save()               
+                messages.success(request, f"Usuario {P.email}  salvo com cargo de  ESTAGIÁRIO!")   
+
+        else:
+            messages.warning(request,"Nenhuma alteração foi selecionada!")
+            return render(request, 'users/permitidos_detail.html',{'permitido': Permitidos.objects.get(pk=pk) })
         LIST=Permitidos.objects.all()
         context={}
         context['permitidos']=LIST
@@ -269,13 +265,27 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
 
-class UserListView(ListView):
-    model = Periodo
-    context_object_name = ''
-    template_name='accounts/perfil.html'
-    ordering = ['-entrada']
+@login_required
+def userProfile(request):
+    e=request.user.email
+    p=Periodo.objects.filter(colaborador__email=e)
+    context={'periodos':p.order_by('-entrada')}
+    return render(request, 'users/perfil.html' , context)
 
-class GeralListView(ListView):
+
+# class UserListView(LoginRequiredMixin,ListView):
+#     model = Periodo
+#     context_object_name = ''
+#     template_name='accounts/perfil.html'
+#     ordering = ['-entrada']
+#     def get_context_data(self,**kwargs):
+#         context=super(UserListView,self).get_context_data(**kwargs)
+#         for u in usuarios_q_ja_iniciaram():
+#             context[u.colaborador.username]=Periodo.objects.filter(colaborador__username =u)
+#             print(context)
+#             return context
+   
+class GeralListView(LoginRequiredMixin,ListView):
     model = Periodo
     context_object_name = ''
     template_name='accounts/geral.html'
@@ -290,7 +300,7 @@ class GeralListView(ListView):
         # ###############################################################################
         return context
 
-class RankingTemplateView(TemplateView):
+class RankingTemplateView(LoginRequiredMixin,TemplateView):
     template_name='users/ranking.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -317,7 +327,7 @@ class RankingTemplateView(TemplateView):
         # ###############################################################################
         context['U']=Usuarios
         return context
-class ParticipantesTemplateView(TemplateView):
+class ParticipantesTemplateView(LoginRequiredMixin,TemplateView):
     part2=[]
     model=User
     template_name='users/participantes.html'
@@ -334,22 +344,23 @@ class ParticipantesTemplateView(TemplateView):
         # ###############################################################################
         return context
     
-class EmailCreateView(CreateView):
+class EmailCreateView(LoginRequiredMixin,CreateView):
     fields=('email','estagiario')
     model=Permitidos
     #success_url = 'users:detalhe'
     #template_name='accounts/super'
     
-class EmailListView(ListView):
+class EmailListView(LoginRequiredMixin,ListView):
     model=Permitidos
     context_object_name = 'permitidos'
     template_name='accounts/permitidos/'
 
-class EmailDetailView(DetailView):
+class EmailDetailView(LoginRequiredMixin,DetailView):
     model=Permitidos
     context_object_name = 'permitido'
    
-class EmailDeleteView(DeleteView):
+class EmailDeleteView(LoginRequiredMixin,DeleteView):
     model=Permitidos
     success_url =reverse_lazy('users:permitidos')
 
+ # p=Periodo.objects.all()

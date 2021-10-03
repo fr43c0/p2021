@@ -7,7 +7,6 @@
         <td id='t2'>Data entrada &nbsp;<i id='1' class="fa fa-sort" aria-hidden="true"></i></td>
         <td id='t3'>Dias corridos(A) &nbsp;<i id='2' class="fa fa-sort" aria-hidden="true"></i></td>
         <td id='t4'>Dias trabalhados(B) &nbsp;<i id='3' class="fa fa-sort" aria-hidden="true"></i></td>
-
         <td id='t5'>% dias trabalhados &nbsp;<i id='4' class="fa fa-sort" aria-hidden="true"></i></td>
         <td id='t6'>Total horas &nbsp;<i id='5' class="fa fa-sort" aria-hidden="true"></i></td>
         <td id='t7'>Media horas/(A) &nbsp;<i id='6' class="fa fa-sort" aria-hidden="true"></i></td>
@@ -20,7 +19,6 @@
         <td style='text-align: center;' id="a2">{{u.data_inicio|date:"d/m/Y"}}</td>
         <td style='text-align: center;' id="a3">{{u.dias_corridos}}</td>
         <td style='text-align: center;' id="a4">{{u.dias_trabalhados}}</td>
-
         <td style='text-align: center;' id="a5">{{u.media_dias_t|floatformat:"1"}}</td>
         <td style='text-align: center;' id="a6">{{u.horas_totais|floatformat:"1"}}</td>
         <td style='text-align: center;' id="a7">{{u.media_h_d_c|floatformat:"1"}}</td>
@@ -29,14 +27,59 @@
     {% endfor %}
 </table>
 <br><br><br>
-<h5>Pesquisa:</h5>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <h5>Pesquisa:</h5>
+        </div>
+        <div class="col-sm"></div>
+        <div class="col-sm"> <a href="{% url 'users:ranking' %}"><button class='btn btn-info'>Voltar</button></a></div>
+
+    </div>
+
+</div>
+
 <hr>
-<h5>Usuários: {{usuarios}}</h5>
-<h5>Anos : {{anos}}</h5>
-<h5>Meses : {{meses}}</h5>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            Usuários
+        </div>
+        <div class="col-sm">
+            Anos
+        </div>
+        <div class="col-sm">
+            Meses
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm">
+            <ul>
+                {% for i in LU %}
+                <li>{{i.colaborador}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm">
+            <ul>
+                {% for ano in anos %}
+                <li>{{ano}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm">
+            <ul>
+                {% for mes in meses %}
+                <li>{{mes}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
 <hr>
 <br><br>
-<a href="{% url 'users:ranking' %}"><button class='btn btn-info'>Voltar</button></a>
+
 <!-- ordena as linhas do ranking -->
 <script src="{% static 'ponto/js/ranking_order.js' %}"></script>
 <br><br> {% else %}

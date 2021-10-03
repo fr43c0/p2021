@@ -40,7 +40,19 @@
                         <!-- <a class="nav-item nav-link" href="{% url 'users:participantes' %}">Membros</a> -->
                         {% endif %} {% else %}
                         <a class="navbar-brand mr-4" href="{% url 'index' %}">Bem vindo!</a> {% endif %}
+                        <div class="dropdown">
+                            <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown"><b>Apps</b>
+                                    <span class="caret"></span>
+                                </button>
+                            <ul style="padding: 5px 15px 5px 15px;width:max-content;background-color: #006B6A" class="dropdown-menu" data-flip="false">
+                                <li><a href="{% url 'users:participantes' %}"><b>Finance_comp</b></a></li>
+                                <li><a href="{% url 'users:participantes' %}"><b>APP 1</b></a></li>
+                                <li><a href="{% url 'users:participantes' %}"><b>APP 2</b></a></li>
+                                <li><a href="{% url 'users:participantes' %}"><b>APP 3</b></a></li>
 
+                                <li><input type="checkbox" class="ckbx" id='' name='mes' type="submit" value='4' class='btn btn-light'>&nbsp;<label for="">ALGO</label></li>
+                            </ul>
+                        </div>
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
