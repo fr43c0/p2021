@@ -35,18 +35,18 @@ def usuarios_q_ja_iniciaram():
     Usuarios=[]
     l=[]
     p=Periodo.objects.all()
-    u=User.objects.all()
-    for usuario in u:
-        q=p.filter(colaborador=usuario).last()           
-        l.append(q)
-    for i in l:
-        if i in p:
-            Usuarios.append(i)
-            #print(Usuarios)
+    # u=User.objects.all()
+    # for usuario in u:
+    #     q=p.filter(colaborador=usuario).last()           
+    #     l.append(q)
+    # for i in l:
+    #     if i in p:
+    #         Usuarios.append(i)
+    #         #print(Usuarios)
+    # print('usando a for para lista',l)
     #retorna lista de  usuario/Periodo salvos
-    # 
-    # U=Periodo.objects.all().values("colaborador__username").distinct() 
-    # Usuarios=[u['colaborador__username'] for u in U]
+    U=Periodo.objects.all().values("colaborador__username").distinct() 
+    Usuarios=[p.filter(colaborador__username=usu['colaborador__username']).last()  for usu in U]
     return Usuarios
 
 #CRIA UMA VARIAVEL DA INSTANCIA DE CADA MODEL - COM NOME DO USUARIO - E NADA MAIS POREM NAO SALVA ESSA INSTANCIA...
@@ -65,7 +65,6 @@ def get_usuario_e_obs(request):
         obs=r['obs']
     else:
         obs=''
-        print(2,'sem observaçoes')
     i=request.user
     if  i.username in r.keys():
         botao=r[i.username]
@@ -77,8 +76,7 @@ def get_display_status(context):
     if 'entrada' not in context and 'saida' not in context:
         context['display']='reiniciar'
     elif'saida' not in context and 'entrada'in context:
-        context['display']='entrou'
-    
+        context['display']='entrou'   
     return context
 
 def get_context(context,request):
@@ -152,6 +150,7 @@ def filtros(request):
     context['p']=p
     context['A']=Periodo.objects.all().values('entrada__year').distinct()
     context['l']=usuarios_q_ja_iniciaram()
+    print ("filtros context['l']=usuarios_q_ja_iniciaram()")
     if request.method == 'POST':
             r=request.POST
             #cria um queryset vazio do model Periodos
@@ -264,14 +263,14 @@ def index(request):
 
     if request.method=='POST':
         O=Obs.objects.filter(colaborador=x)
-        # print('---------------------------------- entrou um post generico ! ! ! !')
-        # print('len O=====================>',len(O))
+        print('---------------------------------- entrou um post generico ! ! ! !')
+        print('len O=====================>',len(O))
         usuario,obs,botao=get_usuario_e_obs(request)
         if 'obs' in request.POST and  len(O)==0 :
             if obs !='':
+                print(O)
                 o_x=Obs(colaborador=x,observacoes=obs)
                 o_x.save()
-
         if botao.lower()=='início':
             entrada=timezone.now()
             #print('------------------------------------poste de inicio')
@@ -284,15 +283,14 @@ def index(request):
             lista.append(x)
             if  len(Entraram.objects.filter(colaborador=x))==0:
                 ep=Entraram(entrada=entrada,ip_address=get_client_ip(request),colaborador=usuario,display='entrou')
-                #print('88888888888888888888',ep.entrada)
                 ep.save()
-        
         elif botao.lower()=='término':
             observ=''
             saida=timezone.now()
             display='saiu'
-            #print('-------------------------------------poste de termino')
+            #print('-------------------------------------post de termino')
             try:
+                #tentando apagar as observacoes do usuario ao bater o ponto de saida
                 o_x=Obs.objects.get(colaborador=x)
                 observ=o_x.observacoes
                 o_x.delete()
@@ -307,7 +305,6 @@ def index(request):
             
             ep=Entraram.objects.get(colaborador=x)
             entrada=ep.entrada
-            #print('9999999999999999999',entrada)
             ip=ep.ip_address
             display_anterior=ep.display
             ep.delete()
@@ -315,7 +312,6 @@ def index(request):
             for i in E:
                 i.delete()
             
-        
             #,observacoes,desligado
             u_i=[u.colaborador for u in usuarios_q_ja_iniciaram()]
             if x not in u_i:
@@ -330,7 +326,6 @@ def index(request):
             horas_totais=get_horas_totais(x)
             media_h_d_c=horas_totais/dias_corridos
             media_h_d_t=horas_totais/dias_trabalhados
-            #print('$$$$$$$$$$$$$$$$$$$$$$',x, inicio,dias_corridos,jornada,dias_trabalhados,media_dias_trabalhados,) ######===ok
             P=Periodo(entrada=entrada,
                     jornada=jornada,
                     saida=saida,
@@ -346,12 +341,8 @@ def index(request):
                     observacoes=observ,
                     display='saiu')
             P.save()
-                
-        
         elif botao.lower()=='reiniciar':
             pass
-           
-
     elif request.method=='GET':
         #print('--------------------------------------Get no fim da pagina')
         if x not in context['l']:
@@ -366,5 +357,5 @@ def index(request):
     EMAILS=[p.email for p in PERM]
     context['emails']=EMAILS
     # ###############################################################################
-    
+    print(context)
     return render(request,'ponto/index.html',context)
