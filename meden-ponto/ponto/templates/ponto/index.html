@@ -123,8 +123,8 @@
     <form action="" method="POST">
         {% csrf_token %}
         <p>Suas observações:</p>
-        <input style='width : 60%;' type="text" name="obs" value={{user.username}}>
-        <button btn btn-secondary type="submit">Enviar</button>
+        <input style='width : 60%;' type="text" name="obs" value={{user.username}} placeholder="obs:">
+        <button class='btn btn-secondary' type="submit">Enviar</button>
     </form>
 
     <p style="font-size: 0.70em;"><i>(max 300 caracteres)</i></p>
@@ -137,10 +137,20 @@
         <tr class='colaborador'>
             <td>{{O.colaborador.username|title}}:</td>
             <td>" {{O.observacoes}} " </td>
+            <td>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="del_obs" value={{O.observacoes}}>
+                    <div class="botao"><input name="del_obs" type="submit" value='Deletar' class='btn btn-outline-danger'></div>
+                </form>
+            </td>
         </tr>
 
         {% endfor %}
     </table>
     {% endif %} {% endif %}
+    <br><br><br>
 </div>
 {% endblock ponto %}
+
+<!-- usando context: l,emails,OBS,e,user -->

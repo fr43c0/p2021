@@ -71,36 +71,10 @@ def get_usuario_e_obs(request):
         print(3,'botao',botao)
     return i,obs,botao
 
-
-def get_display_status(context):
-    if 'entrada' not in context and 'saida' not in context:
-        context['display']='reiniciar'
-    elif'saida' not in context and 'entrada'in context:
-        context['display']='entrou'   
-    return context
-
-def get_context(context,request):
+def get_context():
     e=Entraram.objects.all().order_by('entrada')
-    now=timezone.now()
-    ativos={'ativos':[u.colaborador.username for u in usuarios_q_ja_iniciaram()]}
-    lista=[u.colaborador for u in e]
-    context={'now':now,'ip_conec':get_client_ip(request),'l':lista}
-    if len(e)>0:
-        context['e']=e.order_by('entrada')
-    context2=get_display_status(context)
-    return context2,lista
-
-
-#VERIFICAR UTILIDADE DESSA FUNCAO POIS PARECE QUE NAO ESTA SENDO USADA
-# def apaga_objetos_obs(x):# substitui user por x aqui   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#     try:
-#         oo=Obs.objects.filter(colaborador__username=x)# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#         print('oooooooooooooo',len(oo), oo)
-#         while len(oo)>0:
-#             oo[0].delete()#PARA APAGAR TODOS OS OBJETOS OBS!!!       
-#     except Exception as e:
-#         print('apaga objetos obs ', e)
-#         pass
+    lista_dos_que_entraram=[u.colaborador for u in e]
+    return lista_dos_que_entraram
 
 # ESTA HAVENDO UM ERRO NO DIAS CORRIDOS QUANDO ENTRA NO MESMO DIA DA DIVISAO POR ZERO
 def get_dias_corridos(inicio):
@@ -140,7 +114,6 @@ def get_horas_totais(x):
 def status(request):
     pass
 
-
 def ordenarQuery(query,param):
     pass
 
@@ -150,7 +123,6 @@ def filtros(request):
     context['p']=p
     context['A']=Periodo.objects.all().values('entrada__year').distinct()
     context['l']=usuarios_q_ja_iniciaram()
-    print ("filtros context['l']=usuarios_q_ja_iniciaram()")
     if request.method == 'POST':
             r=request.POST
             #cria um queryset vazio do model Periodos
@@ -213,7 +185,6 @@ def filtros(request):
                         Qp=Q
                     context['p']=Qp
                     context['total']=Qp.count()
-                    print(f'p.conutn=========>{Q.count()}')
                     messages.success(request, f'Busca retornou {Q.count()} linhas!')
                 #busca nao tem resultados
                 else:
@@ -226,16 +197,13 @@ def filtros(request):
                     if 'fav_order' in r  and r['fav_order']=="D":
                         p=p.order_by(f"-{r['ordenar_por']}")
                     else:
-                        p=p.order_by(r['ordenar_por'])
-                    
+                        p=p.order_by(r['ordenar_por']) 
                 else:
                     if 'fav_order' in r  and r['fav_order']=="D":
                         p=p.order_by('-entrada')
                     else:
-                        p=p.order_by('entrada')
-                    
+                        p=p.order_by('entrada')      
                 context['p']=p
-                print(f'p.conutn=========>{p.count()}')
                 messages.success(request,f'Busca retornou {p.count()} linhas!')
 
     # ###############################################################################PASSANDO OS EMAILS DOS ESTAGIARIOS PARA O CONTEXT 
@@ -247,111 +215,105 @@ def filtros(request):
     return render(request,'ponto/filtros.html',context)
 
 def index(request):
-    #print('-----------------------------------cabeça da view')
-    #x=User.objects.order_by('-last_login')[0]
-    context,e,x,obx,botao={},Entraram.objects.all().order_by('entrada'),request.user,'',''
+    context,e,x,botao={},Entraram.objects.all().order_by('entrada'),request.user,''
     context={'x':x,'e':e ,'ip_conec':get_client_ip(request),'display':'reiniciar'}
-    context2,lista=get_context(context,request)
-    context['l']=lista
+    lista_dos_que_entraram=get_context()
+    context['l']=lista_dos_que_entraram
     context['now']=timezone.now()
-    try:
-        #print( 'tentando adicionar oxoxoxoxox')
-        context['OBS']=Obs.objects.all()    
-    except:
-        #print( 'deu ruim aqui')
-        pass
-
+    reinicia=False 
     if request.method=='POST':
+        
         O=Obs.objects.filter(colaborador=x)
-        print('---------------------------------- entrou um post generico ! ! ! !')
-        print('len O=====================>',len(O))
+        context['OBS']=O
         usuario,obs,botao=get_usuario_e_obs(request)
-        if 'obs' in request.POST and  len(O)==0 :
-            if obs !='':
-                print(O)
+        #aqui temos o usuario, as observacoes e o botao apertado
+        #ja fizemos a conferencia se ha obs na requesta na funcao anterior
+        #if 'obs' in request.POST and  len(O)==0 :
+        if obs !='':
+            obs_all=[o.observacoes for o in O]
+            if obs not in obs_all:
                 o_x=Obs(colaborador=x,observacoes=obs)
                 o_x.save()
-        if botao.lower()=='início':
+                context['OBS']=Obs.objects.filter(colaborador=x)
+                messages.success(request,'Observação será salva no termino do expediente!')
+            else:
+                messages.warning(request,'Observação ja foi armazenada anteriormente para registro!')
+        if botao.lower()=='início' and reinicia is False:
             entrada=timezone.now()
-            #print('------------------------------------poste de inicio')
             try:
                 o_x=Obs.objects.get(colaborador=x)
                 observ=o_x.observacoes
             except:
                 pass
             x= request.user  
-            lista.append(x)
+            lista_dos_que_entraram.append(x)
             if  len(Entraram.objects.filter(colaborador=x))==0:
                 ep=Entraram(entrada=entrada,ip_address=get_client_ip(request),colaborador=usuario,display='entrou')
                 ep.save()
-        elif botao.lower()=='término':
+            context['display']='entrou'
+            messages.success(request,f"Bom dia, {x.username.capitalize()}, seu ponto de entrada foi inciado com sucesso! Mãos à obra!")    
+        elif botao.lower()=='término' and reinicia is False:
             observ=''
+            for i in context['OBS']:
+                observ+=i.observacoes+'; '
             saida=timezone.now()
-            display='saiu'
-            #print('-------------------------------------post de termino')
             try:
-                #tentando apagar as observacoes do usuario ao bater o ponto de saida
-                o_x=Obs.objects.get(colaborador=x)
-                observ=o_x.observacoes
-                o_x.delete()
-               # print('observ================>',observ)
-    
+                Obs.objects.filter(colaborador=x).delete()
             except Exception as e:
+                messages.error(request,"Houve uma erro ao deletar as observacões postadas hoje! Informe ao Administrador!!!")
                 print(e)
-                pass
-        
-            if x in lista:
-                lista.pop(lista.index(x))
-            
-            ep=Entraram.objects.get(colaborador=x)
-            entrada=ep.entrada
-            ip=ep.ip_address
-            display_anterior=ep.display
-            ep.delete()
-            E=Entraram.objects.filter(colaborador=x)
-            for i in E:
-                i.delete()
-            
-            #,observacoes,desligado
-            u_i=[u.colaborador for u in usuarios_q_ja_iniciaram()]
-            if x not in u_i:
-                inicio=entrada
+            if x in lista_dos_que_entraram:
+                lista_dos_que_entraram.pop(lista_dos_que_entraram.index(x))
             else:
-                inicio=Periodo.objects.filter(colaborador=usuario).first().entrada
-            dias_corridos=get_dias_corridos(inicio)
-            casas_decimais_jornada=3 #########################################################Numero de casas decimais que apareceram na jornada!
-            jornada= round((((saida-entrada).total_seconds()//1)//3600), casas_decimais_jornada)
-            dias_trabalhados=get_dias_trabalhados(x)
-            media_dias_trabalhados=round((dias_trabalhados*100/dias_corridos),2)
-            horas_totais=get_horas_totais(x)
-            media_h_d_c=horas_totais/dias_corridos
-            media_h_d_t=horas_totais/dias_trabalhados
-            P=Periodo(entrada=entrada,
-                    jornada=jornada,
-                    saida=saida,
-                    horas_totais=horas_totais,
-                    ip_address=ip,
-                    colaborador=x,
-                    data_inicio=inicio,
-                    dias_corridos=dias_corridos,
-                    dias_trabalhados=dias_trabalhados,
-                    media_dias_t=media_dias_trabalhados,
-                    media_h_d_c=media_h_d_c,
-                    media_h_d_t=media_h_d_t,
-                    observacoes=observ,
-                    display='saiu')
-            P.save()
+                print('esse cara nao esta na lista')
+                reinicia=True      
+            if reinicia is False: 
+                ep=Entraram.objects.get(colaborador=x)
+                entrada=ep.entrada
+                ip=ep.ip_address
+                #display_anterior=ep.display
+                ep.delete()
+                E=Entraram.objects.filter(colaborador=x)
+                for i in E:
+                    i.delete()
+                
+                #,observacoes,desligado
+                u_i=[u.colaborador for u in usuarios_q_ja_iniciaram()]
+                if x not in u_i:
+                    inicio=entrada
+                else:
+                    inicio=Periodo.objects.filter(colaborador=usuario).first().entrada
+                dias_corridos=get_dias_corridos(inicio)
+                casas_decimais_jornada=3 #########################################################Numero de casas decimais que apareceram na jornada!
+                jornada= round((((saida-entrada).total_seconds()//1)//3600), casas_decimais_jornada)
+                dias_trabalhados=get_dias_trabalhados(x)
+                media_dias_trabalhados=round((dias_trabalhados*100/dias_corridos),2)
+                horas_totais=get_horas_totais(x)
+                media_h_d_c=horas_totais/dias_corridos
+                media_h_d_t=horas_totais/dias_trabalhados
+                P=Periodo(entrada=entrada,
+                        jornada=jornada,
+                        saida=saida,
+                        horas_totais=horas_totais,
+                        ip_address=ip,
+                        colaborador=x,
+                        data_inicio=inicio,
+                        dias_corridos=dias_corridos,
+                        dias_trabalhados=dias_trabalhados,
+                        media_dias_t=media_dias_trabalhados,
+                        media_h_d_c=media_h_d_c,
+                        media_h_d_t=media_h_d_t,
+                        observacoes=observ,
+                        display='saiu')
+                P.save()
+                context['display']='saiu'
+                messages.success(request,f"Bom descanso {x.username.capitalize()}!")
         elif botao.lower()=='reiniciar':
             pass
-    elif request.method=='GET':
-        #print('--------------------------------------Get no fim da pagina')
+    elif request.method=='GET' or reinicia is True:
+        print('--------------------------------------Get no fim da pagina')
         if x not in context['l']:
             context['x']=x
-    #for i in context:
-        #print('_____________________________________________________________________"')
-       # print(5, 'contexto final: ',i,' : ',context[i])
-        
-    #print('------------------------------------------ultima linha da view')
     # ###############################################################################
     PERM=Permitidos.objects.filter(estagiario=True)
     EMAILS=[p.email for p in PERM]
