@@ -62,7 +62,7 @@ def get_usuario_e_obs(request):
     r=request.POST
     print(1, 'request', r)
     if 'obs' in r:
-        obs=r['obs']
+        obs=r['obs_text']
     else:
         obs=''
     i=request.user
@@ -235,17 +235,12 @@ def index(request):
                 o_x=Obs(colaborador=x,observacoes=obs)
                 o_x.save()
                 context['OBS']=Obs.objects.filter(colaborador=x)
-                messages.success(request,'Observação será salva no termino do expediente!')
+                messages.success(request,'Observação será salva no término do expediente!')
             else:
                 messages.warning(request,'Observação ja foi armazenada anteriormente para registro!')
         if botao.lower()=='início' and reinicia is False:
             entrada=timezone.now()
-            try:
-                o_x=Obs.objects.get(colaborador=x)
-                observ=o_x.observacoes
-            except:
-                pass
-            x= request.user  
+            x=request.user  
             lista_dos_que_entraram.append(x)
             if  len(Entraram.objects.filter(colaborador=x))==0:
                 ep=Entraram(entrada=entrada,ip_address=get_client_ip(request),colaborador=usuario,display='entrou')
@@ -265,8 +260,8 @@ def index(request):
             if x in lista_dos_que_entraram:
                 lista_dos_que_entraram.pop(lista_dos_que_entraram.index(x))
             else:
-                print('esse cara nao esta na lista')
-                reinicia=True      
+                #caso em que o usuario ja saiu da lista dos que entraram
+                reinicia=True     #Gatilho para reinciar o context do zero 
             if reinicia is False: 
                 ep=Entraram.objects.get(colaborador=x)
                 entrada=ep.entrada
@@ -276,7 +271,6 @@ def index(request):
                 E=Entraram.objects.filter(colaborador=x)
                 for i in E:
                     i.delete()
-                
                 #,observacoes,desligado
                 u_i=[u.colaborador for u in usuarios_q_ja_iniciaram()]
                 if x not in u_i:

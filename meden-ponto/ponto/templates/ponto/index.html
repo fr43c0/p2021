@@ -123,7 +123,8 @@
     <form action="" method="POST">
         {% csrf_token %}
         <p>Suas observações:</p>
-        <input style='width : 60%;' type="text" name="obs" value={{user.username}} placeholder="obs:">
+        <input type="hidden" name="obs" value={{user.username}}>
+        <input style='width : 60%;' type="text" name="obs_text" value='' placeholder="obs:">
         <button class='btn btn-secondary' type="submit">Enviar</button>
     </form>
 
