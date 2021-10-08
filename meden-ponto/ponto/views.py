@@ -235,12 +235,22 @@ def index(request):
 
     if request.method=='POST':
         O=Obs.objects.filter(colaborador=x)
+        ja_observado=[i.observacoes for i in O]
         usuario,obs,botao=get_usuario_e_obs(request)
-        if 'obs' in request.POST and  len(O)==0 :
+        if 'del_obs' in request.POST:
+            d_o= request.POST['del_obs']
+            print(111111111111,d_o,request.POST)
+            O.filter(observacoes__startswith=str(d_o)).delete()            
+        
+        if 'obs' in request.POST and  obs !='' and obs not in ja_observado :
             if obs !='':
                 o_x=Obs(colaborador=x,observacoes=obs)
                 o_x.save()
-
+                context['obs']=''
+        else:
+            if  obs  in ja_observado:
+                messages.warning(request,"Observação já computada")
+        context['OBS']=Obs.objects.filter(colaborador=x)
         if botao.lower()=='início':
             entrada=timezone.now()
             try:
@@ -259,9 +269,10 @@ def index(request):
                 observ=''
                 saida=timezone.now()
                 try:
-                    o_x=Obs.objects.get(colaborador=x)
-                    observ=o_x.observacoes
-                    o_x.delete()
+                    o_x=Obs.objects.filter(colaborador=x)
+                    for i in o_x:
+                        observ+=i.observacoes+'; ' 
+                        i.delete()
                 except Exception as e:
                     print(e)
                     pass

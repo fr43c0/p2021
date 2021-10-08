@@ -98,12 +98,12 @@
         {% for O in OBS %}
         <tr class='colaborador'>
             <td>{{O.colaborador.username|title}}:</td>
-            <td>" {{O.observacoes}}" </td>
+            <td>"{{O.observacoes}}" </td>
             <td>
                 <form action="" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="del_obs" value={{O.observacoes}}>
-                    <div class="botao"><input name="del_obs" type="submit" value='Deletar' class='btn btn-outline-danger'></div>
+                    <div class="botao"><input name="obs_del" type="submit" value='Deletar' class='btn btn-outline-danger'></div>
                 </form>
             </td>
         </tr>
