@@ -19,19 +19,16 @@
 <br><br> {% block ponto %}
 <div class="container usuarios">
     <table>
+        {% if user.is_authenticated %} {% for dentro in e %} {% if dentro.colaborador == user %}
         <form action="" method="POST">
-            {% csrf_token %} {% if user.is_authenticated %} {% for dentro in e %} {% if dentro.colaborador == user %}
+            {% csrf_token %}
             <tr class='colaborador dentro user'>
                 <td>{{dentro.ip_address}}</td>
                 <td>
                     <h5 id='dono'>{{ dentro.colaborador.username|title }}</h5>
                 </td>
-                {% if dentro.display == 'reiniciar' %}
-                <td>
-                    <div class="botao"><input id='entrada' name={{dentro.colaborador.username}} type="submit" value='Início' class='btn btn-primary'></div>
-                </td>
-
-                {% elif dentro.display == 'entrou' %}
+                <!-- se a variavel display desse usuario for reiniciar mostreT APENAS O BOTAO INICIO -->
+                {% if dentro.display == 'entrou' %}
                 <td>
                     <div class="botao"><span id='entrada' name={{dentro.colaborador.username}} type="submit" value='entrou' class='btn btn-primary'>Início</span></div>
                 </td>
@@ -39,82 +36,46 @@
                 <td>
                     <div class="botao"><input id='sai' name={{dentro.colaborador.username}} type="submit" value='Término' class='btn btn-danger'></div>
                 </td>
-                {% elif display == 'saiu' %}
-                <td>
-                    <div class="botao"><span id='entrada' name={{dentro.colaborador.username}} type="submit" value='entrou' class='btn btn-primary'>Início</span> </div>
-                </td>
-                <td>{{dentro.entrada|date:"d/m/y H:i:s "}} </td>
-                <td>
-                    <div class="botao"><span id='sai' name={{dentro.colaborador.username}} type="submit" value='saiu' class='btn btn-danger'>Témino</span></div>
-                </td>
-                <td>{{dentro.obs}}</td>
                 {% endif %}
+                <!-- aqui para de apresentar dados do proprio dependentes do display -->
             </tr>
-            {% else %} {% if user.email not in emails %}
-
-
-            <tr class='colaborador dentro outros'>
-                <td>{{dentro.ip_address}}</td>
-                <td>
-                    <h5 id='dono'>{{ dentro.colaborador.username|title }}</h5>
-                </td>
-                {% if dentro.display == 'reiniciar' %}
-                <td>
-                    <div class="botao"><span id='entrada' name={{dentro.colaborador.username}} type="submit" value='Início' class='btn btn-primary'></span></div>
-                </td>
-                {% elif dentro.display == 'entrou' %}
-                <td>
-                    <div class="botao"><span id='entrada' name={{dentro.colaborador.username}} type="submit" value='entrou' class='btn btn-primary'>Início</span></div>
-                </td>
-                <td>{{dentro.entrada|date:"d/m/y H:i:s"}} </td>
-                <td>
-                    <div class="botao"><span id='sai' name={{dentro.colaborador.username}} type="submit" value='Término' class='btn btn-danger'>Término</span></div>
-                </td>
-                {% elif display == 'saiu' %}
-                <td>
-                    <div class="botao"><span id='entrada' name={{dentro.colaborador.username}} type="submit" value='entrou' class='btn btn-primary'>Início</span> </div>
-                </td>
-                <td>{{dentro.entrada|date:"d/m/y H:i:s "}} </td>
-                <td>
-                    <div class="botao"><span id='sai' name={{dentro.colaborador.username}} type="submit" value='saiu' class='btn btn-danger'>Témino</span></div>
-                </td>
-                {% endif %}
-            </tr>
-            {% endif %} {% endif %} {% endfor %} {% if not e or user not in l %}
-            <!-- e ={{e}} lista= {{l}} -->
+        </form>
+        <!-- esse else é para o caso de apresentar dados dos colegas(alheios) que estao dentro mas nao sao os ususaios solicitantes  -->
+        {% else %} {% if user.email not in emails %}
+        <!-- se  nao estiver na lista de emails com restricao de visualizacao , ou seja nao e estagiario -->
+        <tr class='colaborador dentro outros'>
+            <td>{{dentro.ip_address}}</td>
+            <td>
+                <h5 id='dono'>{{ dentro.colaborador.username|title }}</h5>
+            </td>
+            {% if dentro.display == 'entrou' %}
+            <td>
+                <div class="botao"><span id='entrada' name={{dentro.colaborador.username}} type="submit" value='entrou' class='btn btn-primary'>Início</span></div>
+            </td>
+            <td>{{dentro.entrada|date:"d/m/y H:i:s"}} </td>
+            <td>
+                <div class="botao"><span id='sai' name={{dentro.colaborador.username}} type="submit" value='Término' class='btn btn-danger'>Término</span></div>
+            </td>
+            {% endif %}
+            <!-- termina a apresentacao do ponto (alheio) dos colegas em
+                                            dependendo do display dos mesmos -->
+        </tr>
+        {% endif %} {% endif %} {% endfor %}
+        <!-- Se o usuario acabou de entrar no app e nao bateu ponto de entrada -->
+        {% if user not in l %}
+        <form action="" method="POST">
+            {% csrf_token %}
             <tr class='colaborador fora'>
                 <td>{{ip_conec}}</td>
                 <td>
                     <h5 id='dono'>{{ user|title }}</h5>
                 </td>
-                {% if display == 'reiniciar' %}
                 <td>
                     <div class="botao"><input id='entrada' name={{user.username}} type="submit" value='Início' class='btn btn-primary'></div>
                 </td>
-                {% elif display == 'entrou' %}
-                <td>
-                    <div class="botao"><span id='entrada' name={{user.username}} type="submit" value='entrou' class='btn btn-primary'>Início</span></div>
-                </td>
-                <td>{{entrada|date:"d/m/y H:i:s"}} </td>
-                <td>
-                    <div class="botao"><input id='sai' name={{user.username}} type="submit" value='Término' class='btn btn-danger'></div>
-                </td>
-                {% elif display == 'saiu' %}
-                <td>
-                    <div class="botao"><span id='entrada' name={{user.username}} type="submit" value='entrou' class='btn btn-primary'>Início</span></div>
-                </td>
-                <td>{{entrada|date:"d/m/y H:i:s "}} </td>
-                <td>
-                    <div class="botao"><span id='sai' name={{user.username}} type="submit" value='saiu' class='btn btn-danger'>Témino</span></div>
-                </td>
-                <td>{{saida|date:"d/m/y H:i:s "}} </td>
-                <td>
-                    <div class="botao"><input id='reinicia' name={{user.username}} type="submit" value='Reiniciar' class='btn btn-success'></div>
-                </td>
-                {% endif %}
             </tr>
-            {% endif %} {% endif %}
         </form>
+        {% endif %} {% endif %}
     </table>
     <br><br> {% if user.is_authenticated %} {% if user in l %}
     <br>
@@ -137,7 +98,7 @@
         {% for O in OBS %}
         <tr class='colaborador'>
             <td>{{O.colaborador.username|title}}:</td>
-            <td>" {{O.observacoes}} " </td>
+            <td>" {{O.observacoes}}" </td>
             <td>
                 <form action="" method="POST">
                     {% csrf_token %}
@@ -150,8 +111,5 @@
         {% endfor %}
     </table>
     {% endif %} {% endif %}
-    <br><br><br>
 </div>
 {% endblock ponto %}
-
-<!-- usando context: l,emails,OBS,e,user -->
