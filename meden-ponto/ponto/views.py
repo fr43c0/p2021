@@ -42,8 +42,8 @@ def usuarios_q_ja_iniciaram():
     # for i in l:
     #     if i in p:
     #         Usuarios.append(i)
-    #         #print(Usuarios)
-    # print('usando a for para lista',l)
+    #         #####print(Usuarios)
+    # ####print('usando a for para lista',l)
     #retorna lista de  usuario/Periodo salvos
     U=Periodo.objects.all().values("colaborador__username").distinct() 
     Usuarios=[p.filter(colaborador__username=usu['colaborador__username']).last()  for usu in U]
@@ -60,7 +60,7 @@ def q_set_var(usuario):
 def get_usuario_e_obs(request): 
     botao='' 
     r=request.POST
-    print(1, 'request', r)
+    ####print(1, 'request', r)
     if 'obs' in r:
         obs=r['obs_text']
     else:
@@ -68,7 +68,7 @@ def get_usuario_e_obs(request):
     i=request.user
     if  i.username in r.keys():
         botao=r[i.username]
-        print(3,'botao',botao)
+        ####print(3,'botao',botao)
     return i,obs,botao
 
 def get_context():
@@ -82,8 +82,9 @@ def get_dias_corridos(inicio):
         delta=hoje-inicio
         if hoje.date()==inicio.date():
             dias_corridos=1  
+        
         else:
-            dias=delta.days
+            dias=delta
             dias_corridos=dias
         if dias_corridos == 0:#<<<<<<<<<<<<<<<<<<<<<<Fiz esse bacalhau pra concertar o erro
             dias_corridos=1 # talvez seja o caso em que nao chega a dar 24h portanto nao tem 1 dia  
@@ -94,13 +95,13 @@ def get_dias_trabalhados(x):
     l=[]
     for i in p:
         d=i.entrada.date()
-        print('d ', d, x)
+        ####print('d ', d, x)
         if d not in l:
             l.append(d)
     dias_trabalhados=len(l)
     if dias_trabalhados==0:
         dias_trabalhados=1
-    print(len(l))
+    ####print(len(l))
     return dias_trabalhados
 
 def get_horas_totais(x):
@@ -211,7 +212,7 @@ def filtros(request):
     EMAILS=[perm.email for perm in PERM]
     context['emails']=EMAILS
     # ###############################################################################  
-    #print(f'context {context}')
+    #####print(f'context {context}')
     return render(request,'ponto/filtros.html',context)
 
 def index(request):
@@ -227,10 +228,10 @@ def index(request):
 # O DISPLAY REINICIAR FUNCIONA COMO UM DEFAULT QUE SE ALTERA QUANDO O PONTO É BATIDO, ENTRA , SAI, VOLTA PRO DEFAULT
 
     try:
-        #print( 'tentando adicionar oBSERVAÇOES')
+        #####print( 'tentando adicionar oBSERVAÇOES')
         context['OBS']=Obs.objects.all()    
     except:
-        #print( 'deu ruim aqui')
+        #####print( 'deu ruim aqui')
         pass
 
     if request.method=='POST':
@@ -239,8 +240,8 @@ def index(request):
         usuario,obs,botao=get_usuario_e_obs(request)
         if 'del_obs' in request.POST:
             d_o= request.POST['del_obs']
-            print(111111111111,d_o,request.POST)
-            O.filter(observacoes__startswith=str(d_o)).delete()            
+            ####print(111111111111,d_o,request.POST)
+            O.filter(observacoes=d_o).delete()            
         
         if 'obs' in request.POST and  obs !='' and obs not in ja_observado :
             if obs !='':
@@ -274,7 +275,7 @@ def index(request):
                         observ+=i.observacoes+'; ' 
                         i.delete()
                 except Exception as e:
-                    print(e)
+                    ####print(e)
                     pass
                 ep=Entraram.objects.get(colaborador=x)
                 entrada=ep.entrada
@@ -364,7 +365,7 @@ def index(request):
 #                 Obs.objects.filter(colaborador=x).delete()
 #             except Exception as e:
 #                 messages.error(request,"Houve uma erro ao deletar as observacões postadas hoje! Informe ao Administrador!!!")
-#                 print(e)
+#                 ####print(e)
 #             if x in lista_dos_que_entraram:
 #                 lista_dos_que_entraram.pop(lista_dos_que_entraram.index(x))
 #             else:
@@ -413,7 +414,7 @@ def index(request):
 #         elif botao.lower()=='reiniciar':
 #             pass
 #     elif request.method=='GET' or reinicia is True:
-#         print('--------------------------------------Get no fim da pagina')
+#         ####print('--------------------------------------Get no fim da pagina')
 #         if x not in context['l']:
 #             context['x']=x
 #     # ###############################################################################
@@ -421,5 +422,5 @@ def index(request):
 #     EMAILS=[p.email for p in PERM]
 #     context['emails']=EMAILS
 #     # ###############################################################################
-#     print(context)
+#     ####print(context)
 #     return render(request,'ponto/index.html',context)

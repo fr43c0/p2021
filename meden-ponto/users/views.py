@@ -23,7 +23,7 @@ def getDiasCorridosPorUser(usuario,anos,meses):
     mes_inicial=data_inicial.month
     ano_inicial=data_inicial.year
     d,m,a=data_inicial,mes_inicial,ano_inicial
-    print(d,m,a)
+    ##print(d,m,a)
     #=============================================
     #Anos sao selecionados
     if len(anos)>0:
@@ -59,7 +59,7 @@ def getDiasCorridosPorUser(usuario,anos,meses):
                         if ano_inicial ==datetime.datetime.now().year:
                                 #diff de data atual e a data de inicio
                                 delta=(datetime.datetime.now()-datetime.datetime(ano,mes_inicial,data_inicial.day)).days
-                                DiasCorridos+=delta.days
+                                DiasCorridos+=delta
                         #inciou em ano anterior
                         else:
                             #diff do dia 1 de jan ate dia atual
@@ -71,8 +71,8 @@ def getDiasCorridosPorUser(usuario,anos,meses):
                         if ano_inicial == ano:
                             fim_do_ando=datetime.datetime(ano_inicial,12,31)
                             #caso positivo conta da data inicial ate o fim do ano
-                            delta=datetime.datetime(ano_inicial,12,31) - datetime.datetime(ano_inicial,mes_inicial,data_inicial.day) 
-                            DiasCorridos+=delta.days 
+                            delta=datetime.datetime(ano_inicial,12,31) - datetime.datetime(ano_inicial,mes_inicial,data_inicial.day).days
+                            DiasCorridos+=delta
                         else:
                             #senao conta o ano inteiro
                             DiasCorridos+=365 
@@ -157,8 +157,9 @@ def ranking_filter(request):
                     total_horas+=i.jornada
                 #https://stackoverflow.com/questions/49586301/django-count-unique-dates-in-queryset
                 d_t=XU.annotate(date=TruncDate('entrada')).values('date').distinct().count()
-                print(d_t,' ' ,u, '=============================================')
                 d_c=getDiasCorridosPorUser(u,anos,meses)
+                if d_c==0:
+                    d_c=1
                 dic=   { 'colaborador':u,
                         'data_inicio':i.data_inicio,
                         'dias_corridos':d_c,
@@ -193,7 +194,7 @@ def usuarios_q_ja_iniciaram():
     for i in l:
         if i in p:
             Usuarios.append(i)
-            #print(Usuarios)
+            ###print(Usuarios)
     #retorna lista de  usuario/Periodo salvos 
     return Usuarios
 
@@ -207,7 +208,7 @@ def editar_permitido(request,pk):
                 P=Permitidos.objects.get(pk=pk)
                 P.estagiario=False
                 P.save()
-                print(P.email)
+                ##print(P.email)
                 messages.success(request, f"Usuario {P.email}  salvo com cargo de EFETIVADO!")  
             if r['cargo'] == 'estagiario':
                 P=Permitidos.objects.get(pk=pk)
@@ -229,16 +230,16 @@ def del_user(request,pk):
         EMAIL=(request.POST)['email']
     try:
         u = User.objects.get(email = EMAIL)
-        print(u,User.objects.all())
+        ##print(u,User.objects.all())
         u.delete()
-        print(User.objects.all())
+        ##print(User.objects.all())
         p=Permitidos.objects.get(email = EMAIL)
         p.delete()
         messages.success(request, "Usuario Deletado do Banco de Dados")            
 
     except User.DoesNotExist:
         messages.error(request, "Usuario nao consta no Banco de Dados!")
-        print(messages.get_messages(request))
+        ##print(messages.get_messages(request))
         return redirect('users:permitidos')
     # except Exception as e: 
     #     return render(request, 'front.html',{'err':e.message})
@@ -282,7 +283,7 @@ def userProfile(request):
 #         context=super(UserListView,self).get_context_data(**kwargs)
 #         for u in usuarios_q_ja_iniciaram():
 #             context[u.colaborador.username]=Periodo.objects.filter(colaborador__username =u)
-#             print(context)
+#             ##print(context)
 #             return context
    
 class GeralListView(LoginRequiredMixin,ListView):
@@ -314,7 +315,7 @@ class RankingTemplateView(LoginRequiredMixin,TemplateView):
         context['A']=A 
         u=User.objects.all().order_by('username')
         for usuario in u:
-            print(usuario)
+            ##print(usuario)
             q=p.filter(colaborador=usuario).last()
             l.append(q)
         for i in l:

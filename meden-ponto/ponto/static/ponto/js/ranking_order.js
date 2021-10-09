@@ -1,14 +1,9 @@
-//FUNCAO QUE ORDENA O RANKING PELA COLUNA 5
-//POSE SER ACRESCENTADO UM BOTAO  NAS COLUNAS PARA ISSO
-
-
-
 function convertToTimestamp(d) {
     let data = d.split("/")
     let ddtt = new Date(data[2], data[1], data[0])
     return ddtt.getTime()
 }
-
+//FUNCAO QUE ORDENA O RANKING PELA COLUNA "N"
 function sortTable(N) {
     var table, rows, switching, i, x, y, shouldSwitch;
     table = document.getElementById("rank");
@@ -20,7 +15,6 @@ function sortTable(N) {
         //start by saying: no switching is done:
         switching = false;
         rows = table.rows;
-
         /*Loop through all table rows (except the
         first, which contains table headers):*/
         for (i = 1; i < (rows.length - 1); i++) {
@@ -32,7 +26,6 @@ function sortTable(N) {
             y = rows[i + 1].getElementsByTagName("td")[N];
             //check if the two rows should switch place:
             if (N == 1) {
-
                 xd = convertToTimestamp(x.innerHTML)
                 yd = convertToTimestamp(y.innerHTML)
                 if (xd < yd) {
@@ -46,7 +39,6 @@ function sortTable(N) {
                     break;
                 }
             }
-
         }
         if (shouldSwitch) {
             // console.log('fazer troca')
@@ -56,21 +48,18 @@ function sortTable(N) {
             switching = true;
         }
     }
-
 }
 
-function vai() {
+function ordenar() {
     setTimeout(sortTable(Number(this.id)), 1000)
 }
 // Função para adicionar uma espera de evento em t
 function load() {
     // var el = document.getElementById("i2");
-    // el.addEventListener("click", vai, false);
+    // el.addEventListener("click", ordenar, false);
     document.querySelectorAll('.fa-sort').forEach(item => {
-        item.addEventListener('click', vai, false)
+        item.addEventListener('click', ordenar, false)
     })
 }
 document.addEventListener("DOMContentLoaded", load, false);
-
-
 // setTimeout(sortTable, 1000)

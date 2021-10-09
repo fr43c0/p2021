@@ -34,7 +34,7 @@
                 </td>
                 <td>{{dentro.entrada|date:"d/m/y H:i:s"}} </td>
                 <td>
-                    <div class="botao"><input id='sai' name={{dentro.colaborador.username}} type="submit" value='Término' class='btn btn-danger'></div>
+                    <div class="botao"><input id='sai-{{dentro.colaborador.username}}' name={{dentro.colaborador.username}} type="submit" value='Término' class='btn btn-danger'></div>
                 </td>
                 {% endif %}
                 <!-- aqui para de apresentar dados do proprio dependentes do display -->
@@ -102,7 +102,7 @@
             <td>
                 <form action="" method="POST">
                     {% csrf_token %}
-                    <input type="hidden" name="del_obs" value={{O.observacoes}}>
+                    <input type="hidden" name="del_obs" value="{{O.observacoes}}">
                     <div class="botao"><input name="obs_del" type="submit" value='Deletar' class='btn btn-outline-danger'></div>
                 </form>
             </td>

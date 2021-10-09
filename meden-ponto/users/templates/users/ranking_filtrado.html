@@ -40,42 +40,52 @@
 </div>
 
 <hr>
-<div class="container">
-    <div class="row">
-        <div class="col-sm">
-            Usuários
-        </div>
-        <div class="col-sm">
-            Anos
-        </div>
-        <div class="col-sm">
-            Meses
-        </div>
+<style>
+    th {
+        background-color: #137f7d;
+        color: white;
+        text-align: center;
+    }
+    
+    .tc {
+        text-align: center;
+    }
+</style>
+<div class="row">
+    <div class="col-sm">
+        <table>
+            <th>Usuários</th>
+            {% for i in LU %}
+            <tr>
+                <td>{{i.colaborador}}</tr>
+            </tr>
+            {% endfor %}
+        </table>
+
+
     </div>
-    <hr>
-    <div class="row">
-        <div class="col-sm">
-            <ul>
-                {% for i in LU %}
-                <li>{{i.colaborador}}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="col-sm">
-            <ul>
-                {% for ano in anos %}
-                <li>{{ano}}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="col-sm">
-            <ul>
-                {% for mes in meses %}
-                <li>{{mes}}</li>
-                {% endfor %}
-            </ul>
-        </div>
+    <div class="col-sm">
+        <table>
+            <th>&nbsp;Anos&nbsp; </th>
+            {% for ano in anos %}
+            <tr>
+                <td class="tc">{{ano}}</tr>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
+    <div class="col-sm">
+        <table>
+            <th>&nbsp;Meses&nbsp;</th>
+            {% for mes in meses %}
+            <tr>
+                <td class="tc">{{mes}}</tr>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
 </div>
 <hr>
 <br><br>
