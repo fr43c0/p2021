@@ -7,6 +7,7 @@ from .models import Periodo,Entraram,Obs,Filtro
 from users.models import Permitidos ######2021
 # from django.http import HttpResponse
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required 
 # import datetime
 # import json
 import pytz
@@ -190,6 +191,7 @@ def filtros(request):
 
     return render(request,'ponto/filtros.html',context)
 
+@login_required(login_url='/login/')
 def index(request):
     context,x,botao={},request.user,''   
      #PASSA O USUARIO, O IP, O QUERYSET DOS QUE ENTRARAM(PODE SER VAZIO),E UM DISPLAY SETADO PARA REINICIAR(COMO SE TIVESSE ABRINDO AGORA A BAGAÇA)

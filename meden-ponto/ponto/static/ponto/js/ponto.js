@@ -24,31 +24,6 @@ function moveRelogio() {
 }
 
 
-// function loadOnline(e) {
-//     const xhr = new XMLHttpRequest();
-//     xhr.open('GET', './../../static/ponto/js/online.json', true)
-//     xhr.onload = function() {
-//         if (this.status === 200) {
-//             let dono = document.getElementById('dono').textContent.toLowerCase()
-//             resposta = (this.responseText);
-//             const online = JSON.parse(this.responseText)
-//             if (dono != null) {
-//                 online.forEach(function(on) {
-//                     // if (on != dono && on['a'] != 0){
-//                     //    var oldDate = "2010-03-05T07:03:51-0800";
-//                     //    var dateObj = moment(oldDate, "YYY-MM-DDTHH:mm:ssZ").toDate();
-//                     // }
-
-//                 })
-//             }
-//         }
-//     }
-//     xhr.send();
-//     resposta.forEach(
-
-//     )
-//     setTimeout("loadOnline()", 10000)
-// }
 
 // //==================================================================
 // // referencia : https://docs.djangoproject.com/pt-br/3.2/ref/csrf/   <----------------------
