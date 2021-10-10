@@ -62,8 +62,7 @@ def get_dias_corridos(inicio):
         hoje=timezone.now()
         delta=hoje-inicio
         if hoje.date()==inicio.date():
-            dias_corridos=1  
-        
+            dias_corridos=1   
         else:
             dias=delta.days
             dias_corridos=dias
