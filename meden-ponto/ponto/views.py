@@ -5,11 +5,8 @@ from django.views.generic import TemplateView
 from django.contrib.auth.models import User
 from .models import Periodo,Entraram,Obs,Filtro
 from users.models import Permitidos ######2021
-# from django.http import HttpResponse
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required 
-# import datetime
-# import json
 import pytz
 tz=pytz.timezone('America/Sao_Paulo')
 u=User.objects.all()
@@ -188,8 +185,8 @@ def filtros(request):
     EMAILS=[perm.email for perm in PERM]
     context['emails']=EMAILS
     # ###############################################################################  
-
     return render(request,'ponto/filtros.html',context)
+
 
 @login_required(login_url='/login/')
 def index(request):

@@ -17,9 +17,7 @@ function moveRelogio() {
     document.form_relogio.relogio.value = horaImprimivel;
     if (hora == 23 && minuto == 59 && segundo == 59) {
         fim = document.getElementById('sai-' + nome).click()
-
     }
-
     setTimeout("moveRelogio()", 1000)
 }
 
@@ -74,7 +72,7 @@ function moveRelogio() {
 
 // function sendPostData(url, data) { // referencia: https://stackoverflow.com/questions/18761069/django-ajax-post-extend-beforesend-method-used-for-csrf-protection
 //     $.ajax({
-//         url: 'http://localhost:1234',
+//         url: 'http://127.0.0.1:8000',
 //         type: "POST",
 //         data: data,
 //     });
