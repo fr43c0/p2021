@@ -1,11 +1,32 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2>email cadastrado:</h2>
+{% extends 'base.html' %} {% block content %} {% if permitido.estagiario %}
+<h2>ESTAGIÁRIO:</h2>
+{% else %}
+<h2>EFETIVO :</h2>
+{% endif %}
+
 <h3><strong>{{permitido }}</strong></h3>
-<p></p> 
+<p></p>
 <h3><strong></strong></h3>
 <h4><strong><a href="{% url 'users:deletar' pk=permitido.pk %}">Deletar</a></strong></h4>
-
-
-
+<hr>
+<h5>Editar posição do colaborador:</h5>
+<form action="editar_permitido" method="POST">
+    {% csrf_token %} {{ form.as_p }}
+    <label class="checkbox-inline check">
+        <input type="checkbox" name="cargo" id="radio" value="efetivado"> Efetivo
+  </label>
+    <label class="checkbox-inline check">
+        <input type="checkbox" name="cargo" value="estagiario"> Estagiário
+  </label>
+    <br>
+    <button class="btn btn-info" type="submit">Editar</button>
+    <br> <br>
+    <h5><strong><a href="{% url 'users:permitidos' %}">Cancelar</a></strong></h5>
+</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    $('.check input:checkbox').click(function() {
+        $('.check input:checkbox').not(this).prop('checked', false);
+    });
+</script>
 {% endblock content %}

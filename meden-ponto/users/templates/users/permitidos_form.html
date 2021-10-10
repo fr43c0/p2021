@@ -2,7 +2,7 @@
 <h2>Autorizar novo e-mail para cadastro de colaborador:</h2>
 <form action="" method="post">
     {% csrf_token %} {{ form.as_p }}
-    <input type="submit" class='btn btn-primary' value="Cadastrar email">
+    <input type="submit" class='btn btn-info' value="Cadastrar email">
 </form>
 {% else %}
 <h2>Área restrita</h2>

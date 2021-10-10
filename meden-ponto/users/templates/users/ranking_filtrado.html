@@ -1,0 +1,97 @@
+{% extends 'base.html' %} {% load static %}{% block title %} {{user.id}} teste {% endblock title %} {% block body %} {% if user.is_authenticated and user.email not in emails%}
+
+<table id='rank'>
+
+    <tr>
+        <td id='t1'>Nome</td>
+        <td id='t2'>Data entrada &nbsp;<i id='1' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td id='t3'>Dias corridos(A) &nbsp;<i id='2' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td id='t4'>Dias trabalhados(B) &nbsp;<i id='3' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td id='t5'>% dias trabalhados &nbsp;<i id='4' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td id='t6'>Total horas &nbsp;<i id='5' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td id='t7'>Media horas/(A) &nbsp;<i id='6' class="fa fa-sort" aria-hidden="true"></i></td>
+        <td id='t8'>Media horas/(B) &nbsp;<i id='7' class="fa fa-sort" aria-hidden="true"></i></td>
+
+    </tr>
+    {% for u in LU %}
+    <tr>
+        <td style='text-align: center;' id="a1">{{u.colaborador|title}} </td>
+        <td style='text-align: center;' id="a2">{{u.data_inicio|date:"d/m/Y"}}</td>
+        <td style='text-align: center;' id="a3">{{u.dias_corridos}}</td>
+        <td style='text-align: center;' id="a4">{{u.dias_trabalhados}}</td>
+        <td style='text-align: center;' id="a5">{{u.media_dias_t|floatformat:"1"}}</td>
+        <td style='text-align: center;' id="a6">{{u.horas_totais|floatformat:"1"}}</td>
+        <td style='text-align: center;' id="a7">{{u.media_h_d_c|floatformat:"1"}}</td>
+        <td style='text-align: center;' id="a8">{{u.media_h_d_t|floatformat:"1"}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<br><br><br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <h5>Pesquisa:</h5>
+        </div>
+        <div class="col-sm"></div>
+        <div class="col-sm"> <a href="{% url 'users:ranking' %}"><button class='btn btn-info'>Voltar</button></a></div>
+
+    </div>
+
+</div>
+
+<hr>
+<style>
+    th {
+        background-color: #137f7d;
+        color: white;
+        text-align: center;
+    }
+    
+    .tc {
+        text-align: center;
+    }
+</style>
+<div class="row">
+    <div class="col-sm">
+        <table>
+            <th>Usuários</th>
+            {% for i in LU %}
+            <tr>
+                <td>{{i.colaborador}}</tr>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+    </div>
+    <div class="col-sm">
+        <table>
+            <th>&nbsp;Anos&nbsp; </th>
+            {% for ano in anos %}
+            <tr>
+                <td class="tc">{{ano}}</tr>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-sm">
+        <table>
+            <th>&nbsp;Meses&nbsp;</th>
+            {% for mes in meses %}
+            <tr>
+                <td class="tc">{{mes}}</tr>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+</div>
+<hr>
+<br><br>
+
+<!-- ordena as linhas do ranking -->
+<script src="{% static 'ponto/js/ranking_order.js' %}"></script>
+<br><br> {% else %}
+<h1>Área restrita</h1>
+{% endif %} {% endblock body %}
