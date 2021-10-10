@@ -24,92 +24,92 @@ function moveRelogio() {
 }
 
 
-function loadOnline(e) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', './../../static/ponto/js/online.json', true)
-    xhr.onload = function() {
-        if (this.status === 200) {
-            let dono = document.getElementById('dono').textContent.toLowerCase()
-            resposta = (this.responseText);
-            const online = JSON.parse(this.responseText)
-            if (dono != null) {
-                online.forEach(function(on) {
-                    // if (on != dono && on['a'] != 0){
-                    //    var oldDate = "2010-03-05T07:03:51-0800";
-                    //    var dateObj = moment(oldDate, "YYY-MM-DDTHH:mm:ssZ").toDate();
-                    // }
+// function loadOnline(e) {
+//     const xhr = new XMLHttpRequest();
+//     xhr.open('GET', './../../static/ponto/js/online.json', true)
+//     xhr.onload = function() {
+//         if (this.status === 200) {
+//             let dono = document.getElementById('dono').textContent.toLowerCase()
+//             resposta = (this.responseText);
+//             const online = JSON.parse(this.responseText)
+//             if (dono != null) {
+//                 online.forEach(function(on) {
+//                     // if (on != dono && on['a'] != 0){
+//                     //    var oldDate = "2010-03-05T07:03:51-0800";
+//                     //    var dateObj = moment(oldDate, "YYY-MM-DDTHH:mm:ssZ").toDate();
+//                     // }
 
-                })
-            }
-        }
-    }
-    xhr.send();
-    resposta.forEach(
+//                 })
+//             }
+//         }
+//     }
+//     xhr.send();
+//     resposta.forEach(
 
-    )
-    setTimeout("loadOnline()", 10000)
-}
+//     )
+//     setTimeout("loadOnline()", 10000)
+// }
 
-//==================================================================
-// referencia : https://docs.djangoproject.com/pt-br/3.2/ref/csrf/   <----------------------
-//funcao para pegar o cookie e o csrftoken...
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-const csrftoken = getCookie('csrftoken');
+// //==================================================================
+// // referencia : https://docs.djangoproject.com/pt-br/3.2/ref/csrf/   <----------------------
+// //funcao para pegar o cookie e o csrftoken...
+// function getCookie(name) {
+//     let cookieValue = null;
+//     if (document.cookie && document.cookie !== '') {
+//         const cookies = document.cookie.split(';');
+//         for (let i = 0; i < cookies.length; i++) {
+//             const cookie = cookies[i].trim();
+//             // Does this cookie string begin with the name we want?
+//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//                 break;
+//             }
+//         }
+//     }
+//     return cookieValue;
+// }
+// const csrftoken = getCookie('csrftoken');
 
 
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
+// function csrfSafeMethod(method) {
+//     // these HTTP methods do not require CSRF protection
+//     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+// }
 
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-});
-//-------------------------------------***************--------------------------------
-
-// //=================== funcao que envia post =================================
-// referencia: https://stackoverflow.com/questions/18761069/django-ajax-post-extend-beforesend-method-used-for-csrf-protection    <----------------------
-// $.ajax({
-//    url: 'http://127.0.0.1:8000/',
-//    type: "POST",
-//    data:{'termino':123},
-
+// $.ajaxSetup({
+//     beforeSend: function(xhr, settings) {
+//         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+//             xhr.setRequestHeader("X-CSRFToken", csrftoken);
+//         }
+//     }
 // });
-// //=================== funcao que envia o post =================================
+// //-------------------------------------***************--------------------------------
+
+// // //=================== funcao que envia post =================================
+// // referencia: https://stackoverflow.com/questions/18761069/django-ajax-post-extend-beforesend-method-used-for-csrf-protection    <----------------------
+// // $.ajax({
+// //    url: 'http://127.0.0.1:8000/',
+// //    type: "POST",
+// //    data:{'termino':123},
+
+// // });
+// // //=================== funcao que envia o post =================================
 
 
 
-function sendPostData(url, data) { // referencia: https://stackoverflow.com/questions/18761069/django-ajax-post-extend-beforesend-method-used-for-csrf-protection
-    $.ajax({
-        url: 'http://localhost:1234',
-        type: "POST",
-        data: data,
-    });
-}
-var origem = window.location.origin;
-console.log('origem ', origem)
-var url = 'http://meden.pythonanywhere.com/';
-var data = { "DERRUBAR": '' }
-sendPostData(url, data)
-console.log(data)
+// function sendPostData(url, data) { // referencia: https://stackoverflow.com/questions/18761069/django-ajax-post-extend-beforesend-method-used-for-csrf-protection
+//     $.ajax({
+//         url: 'http://localhost:1234',
+//         type: "POST",
+//         data: data,
+//     });
+// }
+// var origem = window.location.origin;
+// console.log('origem ', origem)
+// var url = 'http://meden.pythonanywhere.com/';
+// var data = { "DERRUBAR": '' }
+// sendPostData(url, data)
+// console.log(data)
 
 //funçao para atualizar dados na pagina Ranking (atualiza independente do que esta salvo no banco de dados)
 function refreshData() {

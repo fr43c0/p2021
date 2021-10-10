@@ -71,8 +71,8 @@ def getDiasCorridosPorUser(usuario,anos,meses):
                         if ano_inicial == ano:
                             fim_do_ando=datetime.datetime(ano_inicial,12,31)
                             #caso positivo conta da data inicial ate o fim do ano
-                            delta=datetime.datetime(ano_inicial,12,31) - datetime.datetime(ano_inicial,mes_inicial,data_inicial.day).days
-                            DiasCorridos+=delta
+                            delta=datetime.datetime(ano_inicial,12,31) - datetime.datetime(ano_inicial,mes_inicial,data_inicial.day)
+                            DiasCorridos+=delta.days
                         else:
                             #senao conta o ano inteiro
                             DiasCorridos+=365 
@@ -169,6 +169,17 @@ def ranking_filter(request):
                         'media_h_d_c':round(total_horas/d_c,1),
                         'media_h_d_t':round(total_horas/d_t,1) ,
                         }
+                LU.append(dic)
+            else:
+                dic={'colaborador':u,
+                        'data_inicio':p.filter(colaborador__username=u).last().data_inicio,
+                        'dias_corridos':0,
+                        'dias_trabalhados':0,
+                        'horas_totais':0,
+                        'media_dias_t':0,
+                        'media_h_d_c':0,
+                        'media_h_d_t':0 ,
+                }
                 LU.append(dic)
         context['LU']=LU
         if len(anos)==0:
@@ -274,18 +285,6 @@ def userProfile(request):
     return render(request, 'users/perfil.html' , context)
 
 
-# class UserListView(LoginRequiredMixin,ListView):
-#     model = Periodo
-#     context_object_name = ''
-#     template_name='accounts/perfil.html'
-#     ordering = ['-entrada']
-#     def get_context_data(self,**kwargs):
-#         context=super(UserListView,self).get_context_data(**kwargs)
-#         for u in usuarios_q_ja_iniciaram():
-#             context[u.colaborador.username]=Periodo.objects.filter(colaborador__username =u)
-#             ##print(context)
-#             return context
-   
 class GeralListView(LoginRequiredMixin,ListView):
     model = Periodo
     context_object_name = ''
@@ -315,7 +314,6 @@ class RankingTemplateView(LoginRequiredMixin,TemplateView):
         context['A']=A 
         u=User.objects.all().order_by('username')
         for usuario in u:
-            ##print(usuario)
             q=p.filter(colaborador=usuario).last()
             l.append(q)
         for i in l:
@@ -328,6 +326,7 @@ class RankingTemplateView(LoginRequiredMixin,TemplateView):
         # ###############################################################################
         context['U']=Usuarios
         return context
+
 class ParticipantesTemplateView(LoginRequiredMixin,TemplateView):
     part2=[]
     model=User

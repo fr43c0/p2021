@@ -80,5 +80,6 @@
     }
     
     input[type="radio"] {
-        width: 20px;
+        width: 20px !important;
+        margin-top: 1.2%;
     }
