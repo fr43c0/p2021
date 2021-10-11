@@ -45,7 +45,8 @@
                         <!-- <a class="nav-item nav-link" href="{% url 'users:participantes' %}">Membros</a> -->
                         {% endif %} {% else %}
                         <a class="navbar-brand mr-4" href="{% url 'index' %}">Bem vindo!</a> {% endif %} &nbsp; &nbsp;
-                        <div class="dropdown">
+                        {% if user.is_authenticated %}
+                         <div class="dropdown">
                             <button class=" btn btn-outline-info dropdown-toggle" type="button" data-toggle="dropdown"><b>Apps</b>
                                     <span class="caret"></span>
                                 </button>
@@ -55,6 +56,7 @@
                                 <li><a class="app-link" style="color:white" href="#">APP 2</a></li>
                             </ul>
                         </div>
+                      {% else %}
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
