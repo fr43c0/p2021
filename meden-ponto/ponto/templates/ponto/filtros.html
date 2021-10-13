@@ -20,10 +20,9 @@
                         </button>
                 <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                     {% for up in l %}
-                    <<<<<<< HEAD <li> <input id='entrada' name='usuario' type="submit" value={{up.colaborador|title}} class='btn btn-light'> =======
                         <li>
                             <input type="checkbox" class="ckbx" name='usuario' type="submit" value='{{up.colaborador}}' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
-                            <label for="">{{up.colaborador}}</label> >>>>>>> obs
+                            <label for="">{{up.colaborador}}</label>
                         </li>
                         {% endfor %}
                 </ul>
