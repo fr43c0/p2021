@@ -1,5 +1,4 @@
 function moveRelogio() {
-    nome = document.getElementsByClassName('navbar-brand')[0].innerText.toLowerCase().split(' ')[2].slice(0, -1)
     momentoAtual = new Date()
     hora = momentoAtual.getHours()
     minuto = momentoAtual.getMinutes()
@@ -15,74 +14,8 @@ function moveRelogio() {
         hora = "0" + hora
     horaImprimivel = hora + " : " + minuto + " : " + segundo
     document.form_relogio.relogio.value = horaImprimivel;
-    if (hora == 23 && minuto == 59 && segundo == 59) {
-        fim = document.getElementById('sai-' + nome).click()
-    }
     setTimeout("moveRelogio()", 1000)
 }
-
-
-
-// //==================================================================
-// // referencia : https://docs.djangoproject.com/pt-br/3.2/ref/csrf/   <----------------------
-// //funcao para pegar o cookie e o csrftoken...
-// function getCookie(name) {
-//     let cookieValue = null;
-//     if (document.cookie && document.cookie !== '') {
-//         const cookies = document.cookie.split(';');
-//         for (let i = 0; i < cookies.length; i++) {
-//             const cookie = cookies[i].trim();
-//             // Does this cookie string begin with the name we want?
-//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                 break;
-//             }
-//         }
-//     }
-//     return cookieValue;
-// }
-// const csrftoken = getCookie('csrftoken');
-
-
-// function csrfSafeMethod(method) {
-//     // these HTTP methods do not require CSRF protection
-//     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-// }
-
-// $.ajaxSetup({
-//     beforeSend: function(xhr, settings) {
-//         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-//             xhr.setRequestHeader("X-CSRFToken", csrftoken);
-//         }
-//     }
-// });
-// //-------------------------------------***************--------------------------------
-
-// // //=================== funcao que envia post =================================
-// // referencia: https://stackoverflow.com/questions/18761069/django-ajax-post-extend-beforesend-method-used-for-csrf-protection    <----------------------
-// // $.ajax({
-// //    url: 'http://127.0.0.1:8000/',
-// //    type: "POST",
-// //    data:{'termino':123},
-
-// // });
-// // //=================== funcao que envia o post =================================
-
-
-
-// function sendPostData(url, data) { // referencia: https://stackoverflow.com/questions/18761069/django-ajax-post-extend-beforesend-method-used-for-csrf-protection
-//     $.ajax({
-//         url: 'http://127.0.0.1:8000',
-//         type: "POST",
-//         data: data,
-//     });
-// }
-// var origem = window.location.origin;
-// console.log('origem ', origem)
-// var url = 'http://meden.pythonanywhere.com/';
-// var data = { "DERRUBAR": '' }
-// sendPostData(url, data)
-// console.log(data)
 
 //funçao para atualizar dados na pagina Ranking (atualiza independente do que esta salvo no banco de dados)
 function refreshData() {
