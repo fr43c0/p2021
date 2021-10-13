@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load static %}{% block title %} {{user.id}} teste {% endblock title %} {% block body %} {% if user.is_authenticated and user.email not in emails%}
+{% extends 'base.html' %} {% load static %}{% block title %} {% endblock title %} {% block body %} {% if user.is_authenticated and user.email not in emails%}
 
 <table id='rank'>
 
