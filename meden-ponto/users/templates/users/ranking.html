@@ -48,7 +48,7 @@
             <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                 {% for u in U %}
                 <li>
-                    <input type="checkbox" name='usuario' type="submit" value='{{u.colaborador}}' class='btn btn-info'> &nbsp;
+                    <input type="checkbox" :name='usuario' type="submit" value='{{u.colaborador}}' class='ckbx btn btn-info'> &nbsp;
                     <label for="">{{u.colaborador}}</label>
                 </li>
                 {% endfor %}
@@ -61,7 +61,7 @@
             </button>
             <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                 {% for a in A %}
-                <li><input type="checkbox" name='ano' type="submit" value='{{a}}' class='btn btn-info'> &nbsp;
+                <li><input type="checkbox" name='ano' type="submit" value='{{a}}' class='ckbx btn btn-info'> &nbsp;
                     <label for="">{{a}}</label>
                 </li>
                 {% endfor %}
@@ -73,18 +73,18 @@
             <span class="caret"></span>
         </button>
             <ul style="padding: 5px 15px 5px 15px; width:max-content" class="dropdown-menu" data-flip="false">
-                <li><input type="checkbox" id='' name='mes' type="submit" value='1' class='btn btn-info'>&nbsp;<label for="">JAN</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='2' class='btn btn-info'>&nbsp;<label for="">FEV</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='3' class='btn btn-info'>&nbsp;<label for="">MAR</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='4' class='btn btn-info'>&nbsp;<label for="">ABR</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='5' class='btn btn-info'>&nbsp;<label for="">MAI</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='6' class='btn btn-info'>&nbsp;<label for="">JUN</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='7' class='btn btn-info'>&nbsp;<label for="">JUL</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='8' class='btn btn-info'>&nbsp;<label for="">AGO</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='9' class='btn btn-info'>&nbsp;<label for="">SET</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='10' class='btn btn-info'>&nbsp;<label for="">OUT</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='11' class='btn btn-info'>&nbsp;<label for="">NOV</label></li>
-                <li><input type="checkbox" id='' name='mes' type="submit" value='12' class='btn btn-info'>&nbsp;<label for="">DEZ</label></li>
+	        <li><input type="checkbox" id='' name='mes' type="submit" value='1' class='ckbx btn btn-info'>&nbsp;<label for="">JAN</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='2' class='ckbx btn btn-info'>&nbsp;<label for="">FEV</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='3' class='ckbx  btn btn-info'>&nbsp;<label for="">MAR</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='4' class='ckbx  btn btn-info'>&nbsp;<label for="">ABR</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='5' class='ckbx  btn btn-info'>&nbsp;<label for="">MAI</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='6' class='ckbx  btn btn-info'>&nbsp;<label for="">JUN</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='7' class='ckbx  btn btn-info'>&nbsp;<label for="">JUL</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='8' class='ckbx  btn btn-info'>&nbsp;<label for="">AGO</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='9' class='ckbx  btn btn-info'>&nbsp;<label for="">SET</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='10' class='ckbx  btn btn-info'>&nbsp;<label for="">OUT</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='11' class='ckbx  btn btn-info'>&nbsp;<label for="">NOV</label></li>
+                <li><input type="checkbox" id='' name='mes' type="submit" value='12' class='ckbx  btn btn-info'>&nbsp;<label for="">DEZ</label></li>
             </ul>
         </div> &nbsp; &nbsp;
         <button class="btn btn-info" type="submit">Selecionar</button>
