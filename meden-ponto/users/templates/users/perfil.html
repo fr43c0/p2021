@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %} {{user.id}} teste {% endblock title %} {% block body %} {% if user.is_authenticated %}
+{% extends 'base.html' %} {% block title %}{% endblock title %} {% block body %} {% if user.is_authenticated %}
 <h3>{{user|title}}</h3>
 <!-- <h5>Data de inicio: {{periodo_list.last.entrada|date:"Y-m-d"}}</h5> -->
 <table>
