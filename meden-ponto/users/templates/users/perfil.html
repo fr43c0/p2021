@@ -4,7 +4,8 @@
 <table>
     <tr id='colab'>
         <td>#</td>
-        <td>ip</td>
+        <td>ip_e</td>
+        <td>ip_s</td>
         <td>data</td>
         <td>entrada</td>
         <td>saida</td>
@@ -17,6 +18,7 @@
 
         <td>{{forloop.counter}}</td>
         <td> {{periodo.ip_address}} </td>
+        <td> {{periodo.ip_saida}} </td>
         <td> {{periodo.entrada|date:"d/m/y"}} </td>
         <td> {{periodo.entrada|time:"H:i:s"}} </td>
         <td> {{periodo.saida|time:"H:i:s"}} </td>

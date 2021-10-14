@@ -17,6 +17,7 @@
 </body>
 {% endblock body %}
 <br><br> {% block ponto %}
+
 <div class="container usuarios">
     <table>
         {% if user.is_authenticated %} {% for dentro in e %} {% if dentro.colaborador == user %}

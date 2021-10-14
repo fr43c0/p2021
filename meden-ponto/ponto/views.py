@@ -7,7 +7,10 @@ from .models import Periodo,Entraram,Obs,Filtro
 from users.models import Permitidos ######2021
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required 
-import pytz
+import datetime,pytz
+from django.http import HttpResponse
+
+
 tz=pytz.timezone('America/Sao_Paulo')
 u=User.objects.all()
 e=Entraram.objects.all()
@@ -26,7 +29,6 @@ def get_client_ip(request):
 #usuarios que ja tem periodo registrado no bd
 def usuarios_q_ja_iniciaram():
     Usuarios=[]
-    l=[]
     p=Periodo.objects.all()
     U=Periodo.objects.all().values("colaborador__username").distinct() 
     Usuarios=[p.filter(colaborador__username=usu['colaborador__username']).last()  for usu in U]
@@ -89,6 +91,65 @@ def get_horas_totais(x):
         j=i.jornada
         total=total+j
     return total
+
+
+def derrubar(request):
+    #pega a data corrente
+    today=timezone.localtime().date()
+    #verifica quem esta com ponto iniciado
+    e=Entraram.objects.all()
+    for i in e:
+        #verifica se esse cara deu entrada no dia anterior
+        print(f'{i.entrada}-- {i.entrada.date()} = = {today} == {i.entrada.date()==today}' )
+        if i.entrada.date() != today:
+            #caso positivo pega o usuario
+            esquecido=User.objects.get(username=i.colaborador.username)
+            #salva os dados e obs do esquecido
+            observ=''
+            saida=i.entrada
+            ob_esq=Obs.objects.filter(colaborador=esquecido)
+            for i in ob_esq:
+                observ+=f'{i.observacoes} ;'
+                i.delete()   
+            ep=Entraram.objects.get(colaborador=esquecido)
+            entrada=ep.entrada
+            ip=ep.ip_address
+            ep.delete()
+            #versao anterior continha essas linhas, acho que para garantir a delecao
+            E=Entraram.objects.filter(colaborador=esquecido)
+            for i in E:
+                i.delete()
+            #para verificaar o caso de ser o primeiro dia de trabalho de um usuario    
+            colaboradores=[periodo.colaborador for periodo in  usuarios_q_ja_iniciaram()]
+            if esquecido not in colaboradores:
+                inicio=entrada
+            else:
+                inicio=Periodo.objects.filter(colaborador=esquecido).first().entrada
+            dias_corridos=get_dias_corridos(inicio)
+            jornada= 0
+            dias_trabalhados=get_dias_trabalhados(esquecido)
+            media_dias_trabalhados=round((dias_trabalhados*100/dias_corridos),2)
+            horas_totais=get_horas_totais(esquecido)
+            media_h_d_c=horas_totais/dias_corridos
+            media_h_d_t=horas_totais/dias_trabalhados
+            P=Periodo(entrada=entrada,
+                        jornada=jornada,
+                        saida=saida,
+                        horas_totais=horas_totais,
+                        ip_address=ip,
+                        ip_saida='0.0.0.0',
+                        colaborador=esquecido,
+                        data_inicio=inicio,
+                        dias_corridos=dias_corridos,
+                        dias_trabalhados=dias_trabalhados,
+                        media_dias_t=media_dias_trabalhados,
+                        media_h_d_c=media_h_d_c,
+                        media_h_d_t=media_h_d_t,
+                        observacoes=observ+ '  DERRUBADO!',
+                        display='saiu',)
+            P.save()
+    ##########################################################
+    return HttpResponse(f'Voce nao devia estar olhando isso...I am watching you --> {get_client_ip(request)}')
 
 def filtros(request):
     p=Periodo.objects.all().order_by('entrada')
@@ -179,7 +240,7 @@ def filtros(request):
                 context['p']=p
                 messages.success(request,f'Busca retornou {p.count()} linhas!')
 
-    # ###############################################################################PASSANDO OS EMAILS DOS ESTAGIARIOS PARA O CONTEXT 
+    # #######PASSANDO OS EMAILS DOS ESTAGIARIOS PARA O CONTEXT####################### 
     PERM=Permitidos.objects.filter(estagiario=True)
     EMAILS=[perm.email for perm in PERM]
     context['emails']=EMAILS
@@ -206,9 +267,12 @@ def index(request):
             messages.warning(request,"Sua observação anotada para registro foi deletada!")         
         if 'obs' in request.POST  and obs not in ja_observado :
             if obs !='':
-                o_x=Obs(colaborador=x,observacoes=obs)
-                o_x.save()
-                messages.success(request,"Observações anotadas. Serão salvas no final no expediente.")
+                if Entraram.objects.filter(colaborador=x).count()==1:
+                    o_x=Obs(colaborador=x,observacoes=obs)
+                    o_x.save()
+                    messages.success(request,"Observações anotadas. Serão salvas no final no expediente.")
+                else:
+                    messages.error(request,'Inicie o ponto antes de enviar observações.')
         else:
             if  obs  in ja_observado:
                 messages.warning(request,"Observação já salva anteriormente.")
@@ -219,7 +283,7 @@ def index(request):
             if  Entraram.objects.filter(colaborador=x).count()==0:
                 ep=Entraram(entrada=entrada,ip_address=get_client_ip(request),colaborador=usuario,display='entrou')
                 ep.save()
-                messages.success(request,f"Bom dia, {x.username.capitalize()}! Seu ponto de entrada iniciado! Mão à obra!")
+                messages.success(request,f"Bom dia, {x.username.capitalize()}! Seu ponto de entrada foi iniciado! Mão à obra!")
         elif botao.lower()=='término' :
             if Entraram.objects.filter(colaborador=x).count()== 0:
                 messages.warning(request,"Voce ja bateu o ponto de saida!")
@@ -246,7 +310,7 @@ def index(request):
                 else:
                     inicio=Periodo.objects.filter(colaborador=usuario).first().entrada
                 dias_corridos=get_dias_corridos(inicio)
-                casas_decimais_jornada=3 #########################################################Numero de casas decimais que apareceram na jornada!
+                casas_decimais_jornada=3 ######Numero de casas decimais que apareceram na jornada!
                 jornada= round((((saida-entrada).total_seconds()//1)//3600), casas_decimais_jornada)
                 dias_trabalhados=get_dias_trabalhados(x)
                 media_dias_trabalhados=round((dias_trabalhados*100/dias_corridos),2)
@@ -258,6 +322,7 @@ def index(request):
                         saida=saida,
                         horas_totais=horas_totais,
                         ip_address=ip,
+                        ip_saida=get_client_ip(request),
                         colaborador=x,
                         data_inicio=inicio,
                         dias_corridos=dias_corridos,

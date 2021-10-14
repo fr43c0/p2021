@@ -20,12 +20,12 @@
                         </button>
                 <ul style="padding: 5px 15px 5px 15px;width:max-content" class="dropdown-menu" data-flip="false">
                     {% for up in l %}
-                   
-                        <li>
-                            <input type="checkbox" class="ckbx" name='usuario' type="submit" value='{{up.colaborador}}' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
-                            <label for="">{{up.colaborador}}</label>
-                        </li>
-                        {% endfor %}
+
+                    <li>
+                        <input type="checkbox" class="ckbx" name='usuario' type="submit" value='{{up.colaborador}}' class='btn btn-light'> &nbsp;&nbsp; &nbsp;
+                        <label for="">{{up.colaborador}}</label>
+                    </li>
+                    {% endfor %}
                 </ul>
                 &nbsp; &nbsp;
             </div>
@@ -111,7 +111,8 @@
 <table id='rank'>
     <tr id='colab'>
         <td>#</td>
-        <td>Ip </td>
+        <td>Ip_e </td>
+        <td>Ip_s </td>
         <td> Nome</td>
         <td> Data</td>
         <td>Entrada</td>
@@ -123,6 +124,7 @@
     <tr id='colab'>
         <td>{{forloop.counter}}</td>
         <td> {{periodo.ip_address}} </td>
+        <td> {{periodo.ip_saida}} </td>
         <td> {{periodo.colaborador|title}}</td>
         <td> {{periodo.entrada|date:"d/m/y"}} </td>
         <td> {{periodo.entrada|time:"H:i:s"}} </td>
