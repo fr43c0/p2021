@@ -148,7 +148,7 @@ def derrubar(request):
                         observacoes=observ+ '  DERRUBADO!',
                         display='saiu',)
             P.save()
-    ###########################################################
+    ##########################################################
     return HttpResponse(f'Voce nao devia estar olhando isso...I am watching you --> {get_client_ip(request)}')
 
 def filtros(request):
