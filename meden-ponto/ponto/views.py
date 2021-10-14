@@ -100,7 +100,6 @@ def derrubar(request):
     e=Entraram.objects.all()
     for i in e:
         #verifica se esse cara deu entrada no dia anterior
-        print(f'{i.entrada}-- {i.entrada.date()} = = {today} == {i.entrada.date()==today}' )
         if i.entrada.date() != today:
             #caso positivo pega o usuario
             esquecido=User.objects.get(username=i.colaborador.username)
