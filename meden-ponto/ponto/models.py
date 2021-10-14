@@ -43,6 +43,7 @@ class Periodo(models.Model):
     jornada         = models.DecimalField(max_digits=10,decimal_places=3, blank=True, null=True)
     horas_totais    = models.DecimalField(default=0.0,max_digits=10,decimal_places=3, blank=True, null=True)
     ip_address      = models.GenericIPAddressField(blank=True, null=True)
+    ip_saida        = models.GenericIPAddressField(blank=True, null=True)
     colaborador     = models.ForeignKey(User, on_delete=models.CASCADE,related_name='colab')
     data_inicio     = models.DateTimeField(blank=True, null=True)
     dias_corridos   = models.IntegerField(default=0,blank=True, null=True)

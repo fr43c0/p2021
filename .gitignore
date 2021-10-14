@@ -4,5 +4,4 @@ venv
 *.pyc
 __pycache__
 db.sqlite3
-
-
+ponto/migrations/0034_periodo_ip_saida.py
