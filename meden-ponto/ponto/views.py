@@ -95,7 +95,7 @@ def get_horas_totais(x):
 
 def derrubar(request):
     #pega a data corrente
-    today=timezone.localtime().date()
+    today=timezone.now().date()
     #verifica quem esta com ponto iniciado
     e=Entraram.objects.all()
     for i in e:
